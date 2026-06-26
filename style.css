@@ -1,0 +1,298 @@
+/* Infinitr AI Tracking Website Styles */
+
+:root {
+    --bg-dark: #0a0f1d;
+    --panel-dark: #12192c;
+    --accent-neon: #00ffcc;
+    --text-main: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border-color: #1e293b;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Header & Nav Layout */
+header {
+    background-color: var(--panel-dark);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-neon);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.badge {
+    background: rgba(0, 255, 204, 0.1);
+    border: 1px solid var(--accent-neon);
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+    cursor: pointer;
+}
+
+nav a:hover, nav a.active {
+    color: var(--accent-neon);
+}
+
+/* Page Routing Display Logic */
+.page-section {
+    display: none;
+    animation: fadeIn 0.4s ease-in-out forwards;
+}
+
+.page-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.container {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* Welcome Banner */
+.welcome-banner {
+    margin-bottom: 2rem;
+}
+.welcome-banner h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to right, #fff, var(--accent-neon));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.subtitle {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+/* Dashboard UI Components */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.card {
+    background-color: var(--panel-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    position: relative;
+    transition: border-color 0.3s;
+}
+
+.card:hover {
+    border-color: var(--accent-neon);
+}
+
+.card-icon {
+    font-size: 1.8rem;
+    color: var(--accent-neon);
+    margin-bottom: 1rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0.5rem 0;
+}
+
+.stat-status {
+    font-size: 0.85rem;
+}
+.stat-status.positive { color: #4ade80; }
+.stat-status.stable { color: #60a5fa; }
+
+/* News Feed Ticker Panel */
+.feed-section h2 {
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.news-feed {
+    background-color: var(--panel-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.feed-item {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.feed-item:last-child { border-bottom: none; }
+.feed-time { color: var(--accent-neon); font-family: monospace; font-size: 0.9rem; }
+
+/* Explorer Search & Grid Layout */
+.search-box-container input {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--panel-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.search-box-container input:focus {
+    outline: none;
+    border-color: var(--accent-neon);
+}
+
+.directory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.dir-card {
+    background-color: var(--panel-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.25rem;
+}
+
+.dir-tag {
+    background: rgba(255,255,255,0.05);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    color: var(--accent-neon);
+}
+
+/* Chat Terminal Window UI */
+.terminal-window {
+    background-color: #050811;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+}
+
+.terminal-header {
+    background-color: var(--panel-dark);
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+.dot.red { background-color: #ef4444; }
+.dot.yellow { background-color: #eab308; }
+.dot.green { background-color: #22c55e; }
+.terminal-title { font-family: monospace; font-size: 0.85rem; margin-left: auto; color: var(--text-muted); }
+
+.terminal-body {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    font-family: monospace;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.system-msg { color: #64748b; }
+.user-msg { color: #fff; text-align: right; background: rgba(255,255,255,0.03); padding: 0.5rem; border-radius: 4px;}
+.ai-msg { color: var(--accent-neon); background: rgba(0, 255, 204, 0.02); padding: 0.5rem; border-radius: 4px; border-left: 2px solid var(--accent-neon); }
+
+.terminal-input-row {
+    display: flex;
+    align-items: center;
+    background-color: var(--panel-dark);
+    border-top: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+}
+
+.prompt-symbol { color: var(--accent-neon); font-family: monospace; margin-right: 0.5rem; font-weight: bold; }
+
+.terminal-input-row input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    font-family: monospace;
+    font-size: 1rem;
+    padding: 0.5rem 0;
+}
+
+.terminal-input-row input:focus { outline: none; }
+
+.terminal-input-row button {
+    background: transparent;
+    border: none;
+    color: var(--accent-neon);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding-left: 0.5rem;
+}
+
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--panel-dark);
+    margin-top: auto;
+}

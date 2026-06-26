@@ -3,109 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InfiniTR | AI Real-Time Knowledge Network</title>
+    <title>InfiniTR - Dashboard & Tools</title>
     <link rel="stylesheet" href="style.css">
-    <!-- FontAwesome for Dashboard Icons -->
+    <!-- FontAwesome for clean dashboard icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- Top Navigation Bar -->
-    <header>
-        <div class="logo">
-            <i class="fa-solid fa-infinity"></i> InfiniTR <span class="badge">AI</span>
+    <!-- Auth Gateway Screen -->
+    <div id="auth-screen" class="auth-container">
+        <div class="auth-card">
+            <h2><i class="fa-solid fa-infinity"></i> InfiniTR Login</h2>
+            <p>Welcome back! Please sign in to access your portal.</p>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required placeholder="Enter username">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="Enter password">
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+            <div id="auth-error" class="error-msg">Invalid credentials. Hint: use any password to test!</div>
         </div>
-        <nav>
-            <a href="#dashboard" class="nav-link active" onclick="switchPage('dashboard')">Dashboard</a>
-            <a href="#explorer" class="nav-link" onclick="switchPage('explorer')">AI Directory</a>
-            <a href="#terminal" class="nav-link" onclick="switchPage('terminal')">AI Assistant</a>
-        </nav>
-    </header>
+    </div>
 
-    <!-- Main Container Layout -->
-    <main class="container">
-
-        <!-- PAGE 1: REAL-TIME DASHBOARD -->
-        <section id="page-dashboard" class="page-section active">
-            <div class="welcome-banner">
-                <h1>Real-Time AI Ecosystem Tracker</h1>
-                <p>Tracking neural networks, compute power benchmarks, and artificial intelligence indices globally.</p>
+    <!-- Main Application Wrapper (Hidden until logged in) -->
+    <div id="app-screen" style="display: none;">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <h2><i class="fa-solid fa-infinity"></i> InfiniTR</h2>
             </div>
-
-            <!-- Dynamic Live Stats Cards -->
-            <div class="stats-grid">
-                <div class="card">
-                    <div class="card-icon"><i class="fa-solid fa-microchip"></i></div>
-                    <h3>Global Compute Load</h3>
-                    <p id="stat-compute" class="stat-value">Evaluating...</p>
-                    <span class="stat-status positive"><i class="fa-solid fa-arrow-trend-up"></i> Live Tracking</span>
+            <nav class="sidebar-menu">
+                <a href="#dashboard" class="nav-link active" data-target="dashboard-view">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </a>
+                <a href="#ai-directory" class="nav-link" data-target="ai-directory-view">
+                    <i class="fa-solid fa-robot"></i> AI Directory
+                </a>
+                <a href="#features" class="nav-link" data-target="features-view">
+                    <i class="fa-solid fa-layer-group"></i> Features
+                </a>
+                <a href="#trends" class="nav-link" data-target="trends-view">
+                    <i class="fa-solid fa-arrow-trend-up"></i> Trends
+                </a>
+                <a href="#resources" class="nav-link" data-target="resources-view">
+                    <i class="fa-solid fa-folder-open"></i> Resources
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <i class="fa-solid fa-circle-user profile-icon"></i>
+                    <span id="user-display-name">User Portal</span>
                 </div>
-                <div class="card">
-                    <div class="card-icon"><i class="fa-solid fa-brain"></i></div>
-                    <h3>Active LLM Agents</h3>
-                    <p id="stat-agents" class="stat-value">Syncing...</p>
-                    <span class="stat-status stable">Optimized</span>
-                </div>
-                <div class="card">
-                    <div class="card-icon"><i class="fa-solid fa-bolt"></i></div>
-                    <h3>Avg Inference Speed</h3>
-                    <p id="stat-speed" class="stat-value">Measuring...</p>
-                    <span class="stat-status positive">Peak Performance</span>
-                </div>
+                <button id="logout-btn" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
             </div>
+        </aside>
 
-            <!-- Real-time Event Feed -->
-            <div class="feed-section">
-                <h2><i class="fa-solid fa-satellite-dish"></i> Live AI News & Breakthrough Ticker</h2>
-                <div id="live-news-feed" class="news-feed">
-                    <!-- Loaded dynamically via JavaScript -->
-                </div>
-            </div>
-        </section>
-
-        <!-- PAGE 2: AI REPOSITORY DIRECTORY -->
-        <section id="page-explorer" class="page-section">
-            <h2>Search & Categorize AI Architectures</h2>
-            <p class="subtitle">Filter down current leading models, agents, and research tools.</p>
+        <!-- Main Content Area Area -->
+        <main class="main-content">
             
-            <div class="search-box-container">
-                <input type="text" id="directory-search" placeholder="Type a keyword (e.g., LLM, Vision, Robotics)..." oninput="filterDirectory()">
-            </div>
+            <!-- SECTION: Dashboard -->
+<section id="dashboard-view" class="app-section">
+    <div class="section-header">
+        <h1>System Dashboard (<span id="portal-role-badge">User</span>)</h1>
+        <p>Overview of your integrated applications and system statistics.</p>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fa-solid fa-microchip icon-blue"></i>
+            <div><h3>AI Queries</h3><p class="stat-value">1,420</p></div>
+        </div>
+        <div class="stat-card">
+            <i class="fa-solid fa-bolt icon-green"></i>
+            <div><h3>API Status</h3><p class="stat-value">Active</p></div>
+        </div>
+        <div class="stat-card">
+            <i class="fa-solid fa-database icon-purple"></i>
+            <div><h3>Storage</h3><p class="stat-value">4.2 GB / 10 GB</p></div>
+        </div>
+    </div>
 
-            <div id="directory-grid" class="directory-grid">
-                <!-- Data injected via JS -->
-            </div>
-        </section>
+    <!-- ADMIN ONLY PANEL (Hidden by default) -->
+    <div id="admin-only-panel" class="content-card" style="display: none; border: 1px solid #ef4444; margin-bottom: 1.5rem;">
+        <h3 style="color: #ef4444;"><i class="fa-solid fa-user-shield"></i> Admin Control Center</h3>
+        <p style="margin-bottom: 1rem; color: #94a3b8;">This control layout is restricted to administrative clearance accounts only.</p>
+        <div style="display: flex; gap: 1rem;">
+            <button class="btn-action" style="background: #ef4444;" onclick="alert('Flushing system cache...')">Flush Cache</button>
+            <button class="btn-action" style="background: #22c55e;" onclick="alert('System logs downloaded.')">Download System Logs</button>
+        </div>
+    </div>
 
-        <!-- PAGE 3: INTERACTIVE AI ASSISTANT TERMINAL -->
-        <section id="page-terminal" class="page-section">
-            <h2>InfiniTR Local Core Interface</h2>
-            <p class="subtitle">Ask anything about AI structures, definitions, and operational metrics.</p>
+    <div class="content-card">
+        <h3>Recent Activity</h3>
+        <p>Welcome to your control room. Select features from the left navigation bar to interact with your environment.</p>
+    </div>
+</section>
 
-            <div class="terminal-window">
-                <div class="terminal-header">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                    <span class="terminal-title">infinitr_core_v1.0.sh</span>
+            <!-- SECTION: AI Directory -->
+            <section id="ai-directory-view" class="app-section" style="display: none;">
+                <div class="section-header">
+                    <h1>AI Directory</h1>
+                    <p>Quick access directory for integrated language models and tools.</p>
                 </div>
-                <div id="chat-output" class="terminal-body">
-                    <div class="system-msg">[SYSTEM] InfiniTR Local Subnet Active. Ask me any fundamental question about AI architecture, machine learning concepts, or computer hardware!</div>
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <h4>Text Automation Model</h4>
+                        <p>Generates production code templates and assists file auditing workflows.</p>
+                        <button class="btn-action">Launch Agent</button>
+                    </div>
+                    <div class="tool-card">
+                        <h4>Cyber Engine Suite</h4>
+                        <p>Security protocol tester and local sandbox network tool.</p>
+                        <button class="btn-action">Initialize Suite</button>
+                    </div>
                 </div>
-                <div class="terminal-input-row">
-                    <span class="prompt-symbol">&gt;</span>
-                    <input type="text" id="chat-input" placeholder="Ask something (e.g., What is deep learning?)..." onkeydown="handleChatSubmit(event)">
-                    <button onclick="submitChatQuery()"><i class="fa-solid fa-paper-plane"></i></button>
+            </section>
+
+            <!-- SECTION: Features -->
+            <section id="features-view" class="app-section" style="display: none;">
+                <div class="section-header">
+                    <h1>Core Features</h1>
+                    <p>Explore the full structural feature-set of InfiniTR.</p>
                 </div>
-            </div>
-        </section>
+                <div class="content-card">
+                    <h3>Modular Operations</h3>
+                    <p>InfiniTR supports dynamic client-side hashing, minimizing load constraints over remote networks.</p>
+                </div>
+            </section>
 
-    </main>
+            <!-- SECTION: Trends -->
+            <section id="trends-view" class="app-section" style="display: none;">
+                <div class="section-header">
+                    <h1>Market & Technical Trends</h1>
+                    <p>Real-time technical tracking charts.</p>
+                </div>
+                <div class="content-card">
+                    <h3>Data Streams</h3>
+                    <p>System metrics monitoring terminal pipeline is operating nominally.</p>
+                </div>
+            </section>
 
-    <!-- Footer Status -->
-    <footer>
-        <p>&copy; 2026 InfiniTR Platform. Global AI Metrics Node.</p>
-    </footer>
+            <!-- SECTION: Resources -->
+            <section id="resources-view" class="app-section" style="display: none;">
+                <div class="section-header">
+                    <h1>Developer Resources</h1>
+                    <p>Access reference sheets and development manuals.</p>
+                </div>
+                <div class="content-card">
+                    <h3>Documentation Repository</h3>
+                    <p>Select libraries, setup environments, and code snippets cataloged for execution.</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
 
     <script src="script.js"></script>
 </body>

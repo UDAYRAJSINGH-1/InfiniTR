@@ -1,150 +1,118 @@
 // Infinitr AI Tracking Website - JavaScript
-// --- 1. SINGLE PAGE ROUTING ---
-function switchPage(pageId) {
-    // Hide all section modules
-    document.querySelectorAll('.page-section').forEach(section => {
-        section.classList.remove('active');
-    });
-    // Remove active link states
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.remove('active');
-    });
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // Select DOM nodes
+    const authScreen = document.getElementById('auth-screen');
+    const appScreen = document.getElementById('app-screen');
+    const loginForm = document.getElementById('login-form');
+    const logoutBtn = document.getElementById('logout-btn');
+    const authError = document.getElementById('auth-error');
+    const userDisplayName = document.getElementById('user-display-name');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.app-section');
+    
+    // Role-based elements
+    const portalRoleBadge = document.getElementById('portal-role-badge');
+    const adminOnlyPanel = document.getElementById('admin-only-panel');
 
-    // Show selected item
-    document.getElementById(`page-${pageId}`).classList.add('active');
-    event.currentTarget.classList.add('active');
-}
+    // Hardcoded Local Credentials Registry
+    const CREDENTIALS_REGISTRY = {
+        'admin': { password: 'adminpassword', role: 'Admin', name: 'System Administrator' },
+        'user1': { password: 'userpassword', role: 'User', name: 'Standard Portal User' }
+    };
 
-// --- 2. LIVE REAL-TIME SIMULATOR (Data Tracker Engine) ---
-function updateLiveMetrics() {
-    // Generates highly realistic fluctuating parameters
-    const baseCompute = (78.4 + Math.random() * 4.2).toFixed(1);
-    const activeAgents = Math.floor(1420000 + Math.random() * 85000).toLocaleString();
-    const inferenceTime = Math.floor(22 + Math.random() * 9);
+    // 1. AUTHENTICATION CONTROLLER
+    function checkAuthState() {
+        const isLoggedIn = localStorage.getItem('isLoggedIn');
+        const savedRole = localStorage.getItem('userRole');
+        const savedName = localStorage.getItem('userDisplayName');
 
-    const computeEl = document.getElementById('stat-compute');
-    const agentsEl = document.getElementById('stat-agents');
-    const speedEl = document.getElementById('stat-speed');
-
-    if (computeEl) computeEl.innerText = `${baseCompute} EFLOPS`;
-    if (agentsEl) agentsEl.innerText = activeAgents;
-    if (speedEl) speedEl.innerText = `${inferenceTime} ms`;
-}
-
-// Continuous background ticker execution
-setInterval(updateLiveMetrics, 2500);
-
-// Live Dynamic Feed Injector
-const breakingNews = [
-    "Quantum-accelerated transformers achieve 40% reduction in validation error.",
-    "Open-source local reasoning frameworks hit 150k tokens per second output speeds.",
-    "Sub-surface edge silicon nodes successfully deployed across renewable energy stations.",
-    "Distributed reinforcement frameworks finish mapping complex multi-modal biospheres."
-];
-
-function populateNewsTicker() {
-    const feedContainer = document.getElementById('live-news-feed');
-    if(!feedContainer) return;
-
-    feedContainer.innerHTML = "";
-    breakingNews.forEach(news => {
-        const item = document.createElement('div');
-        item.className = "feed-item";
-        
-        const timestamp = new Date().toLocaleTimeString();
-        item.innerHTML = `
-            <span class="feed-text">${news}</span>
-            <span class="feed-time">[${timestamp}]</span>
-        `;
-        feedContainer.prepend(item);
-    });
-}
-
-// --- 3. SEARCH DIRECTORY REPOSITORY ENGINE ---
-const aiDirectoryData = [
-    { title: "Large Language Models (LLMs)", desc: "Deep learning models trained on trillions of parameters to process, generate, and reason using syntax structures.", tag: "Generative" },
-    { title: "Computer Vision Systems", desc: "Convolutional neural structures engineered to decode frame spatial properties, object maps, and classification maps.", tag: "Vision" },
-    { title: "Autonomous Agents", desc: "Self-correcting recursive execution graphs that can execute programmatic workflows, API interactions, and goal paths.", tag: "Robotics" },
-    { title: "Neural Graphics Ensembles", desc: "Radiance pipelines and vector weights utilizing machine learning grids to construct spatial 3D renders from physical inputs.", tag: "Graphics" },
-    { title: "Edge Computing Hardware Integration", desc: "Micro-architecture arrays optimized to handle direct local inference matrix math natively with low wattage consumption.", tag: "Hardware" }
-];
-
-function buildDirectory() {
-    const grid = document.getElementById('directory-grid');
-    if(!grid) return;
-
-    grid.innerHTML = aiDirectoryData.map(item => `
-        <div class="dir-card">
-            <span class="dir-tag">${item.tag}</span>
-            <h3 style="margin: 0.5rem 0">${item.title}</h3>
-            <p style="color: var(--text-muted); font-size: 0.95rem; line-height:1.4">${item.desc}</p>
-        </div>
-    `).join('');
-}
-
-function filterDirectory() {
-    const searchTerm = document.getElementById('directory-search').value.toLowerCase();
-    const cards = document.querySelectorAll('.dir-card');
-
-    cards.forEach((card, index) => {
-        const item = aiDirectoryData[index];
-        const match = item.title.toLowerCase().includes(searchTerm) || 
-                      item.desc.toLowerCase().includes(searchTerm) || 
-                      item.tag.toLowerCase().includes(searchTerm);
-        card.style.display = match ? "block" : "none";
-    });
-}
-
-// --- 4. INTERACTIVE KNOWLEDGE PATTERN CHAT ---
-const fallbackKnowledgeBase = {
-    "deep learning": "Deep learning is a subset of machine learning based on artificial neural networks with multiple layers (hence 'deep'). These layers mimic structural biological node behaviors to analyze non-linear complex patterns.",
-    "llm": "Large Language Models use massive Transformer-based neural network matrices containing billions of tunable weight channels, predicting sequence arrays based on contextual attention parameters.",
-    "gpu": "Graphics Processing Units are hardware processors explicitly built with thousands of small arithmetic engine cores running mathematical vector matrices completely parallel.",
-    "default": "Query indexed successfully. Based on real-time trends, the development pattern requested is accelerating heavily. Core research suggests deep reinforcement testing and attention layers remain foundational to this subsystem."
-};
-
-function handleChatSubmit(e) {
-    if (e.key === 'Enter') submitChatQuery();
-}
-
-function submitChatQuery() {
-    const inputEl = document.getElementById('chat-input');
-    const outputContainer = document.getElementById('chat-output');
-    if (!inputEl || !inputEl.value.trim()) return;
-
-    const queryText = inputEl.value;
-    inputEl.value = ""; // clear prompt buffer
-
-    // Append User Prompt Card
-    const userDiv = document.createElement('div');
-    userDiv.className = "user-msg";
-    userDiv.innerText = `> ${queryText}`;
-    outputContainer.appendChild(userDiv);
-
-    // AI Core response resolution parsing loop
-    setTimeout(() => {
-        const aiDiv = document.createElement('div');
-        aiDiv.className = "ai-msg";
-        
-        let answer = fallbackKnowledgeBase["default"];
-        const structuredLower = queryText.toLowerCase();
-
-        for (let key in fallbackKnowledgeBase) {
-            if (structuredLower.includes(key) && key !== "default") {
-                answer = fallbackKnowledgeBase[key];
-                break;
+        if (isLoggedIn === 'true') {
+            authScreen.style.display = 'none';
+            appScreen.style.display = 'flex';
+            userDisplayName.textContent = savedName || 'User Portal';
+            
+            // Adjust interface permissions dynamically based on active account role
+            if (savedRole === 'Admin') {
+                portalRoleBadge.textContent = 'Admin Mode';
+                portalRoleBadge.style.color = '#ef4444';
+                if (adminOnlyPanel) adminOnlyPanel.style.display = 'block';
+            } else {
+                portalRoleBadge.textContent = 'User View';
+                portalRoleBadge.style.color = '#3b82f6';
+                if (adminOnlyPanel) adminOnlyPanel.style.display = 'none';
             }
+
+            handleRouting(); // run router logic when entering app
+        } else {
+            authScreen.style.display = 'flex';
+            appScreen.style.display = 'none';
+            window.location.hash = ''; // Force login isolation boundary
+        }
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const usernameInput = document.getElementById('username').value.trim().toLowerCase();
+        const passwordInput = document.getElementById('password').value;
+        
+        // Match credentials against local mock registry
+        const accountFound = CREDENTIALS_REGISTRY[usernameInput];
+
+        if (accountFound && accountFound.password === passwordInput) {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userRole', accountFound.role);
+            localStorage.setItem('userDisplayName', accountFound.name);
+            authError.style.display = 'none';
+            
+            // Clear inputs safely
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            checkAuthState();
+            window.location.hash = '#dashboard'; // redirect into app workspace
+        } else {
+            authError.textContent = "Invalid username or password. Check credentials registry configuration.";
+            authError.style.display = 'block';
+        }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        localStorage.clear(); // Clear all auth data keys safely
+        checkAuthState();
+    });
+
+
+    // 2. Client Side Hash Routing System
+    function handleRouting() {
+        if (localStorage.getItem('isLoggedIn') !== 'true') return;
+
+        let currentHash = window.location.hash;
+        
+        if (!currentHash || currentHash === '#') {
+            currentHash = '#dashboard';
         }
 
-        aiDiv.innerText = `[INFINITR-CORE]: ${answer}`;
-        outputContainer.appendChild(aiDiv);
-        outputContainer.scrollTop = outputContainer.scrollHeight;
-    }, 450);
-}
+        sections.forEach(sec => sec.style.display = 'none');
+        navLinks.forEach(link => link.classList.remove('active'));
 
-// --- INITIALIZING NODE ENGINE LIFE ---
-window.onload = () => {
-    updateLiveMetrics();
-    populateNewsTicker();
-    buildDirectory();
-};
+        const targetLink = document.querySelector(`.nav-link[href="${currentHash}"]`);
+        
+        if (targetLink) {
+            targetLink.classList.add('active');
+            const targetViewId = targetLink.getAttribute('data-target');
+            const targetSection = document.getElementById(targetViewId);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
+        } else {
+            const defaultDashboard = document.getElementById('dashboard-view');
+            if (defaultDashboard) defaultDashboard.style.display = 'block';
+            const dashLink = document.querySelector('.nav-link[href="#dashboard"]');
+            if (dashLink) dashLink.classList.add('active');
+        }
+    }
+
+    window.addEventListener('hashchange', handleRouting);
+    checkAuthState();
+});

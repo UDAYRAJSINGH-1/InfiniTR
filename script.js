@@ -14,74 +14,97 @@ document.addEventListener('DOMContentLoaded', () => {
     // Role-based elements
     const portalRoleBadge = document.getElementById('portal-role-badge');
     const adminOnlyPanel = document.getElementById('admin-only-panel');
+    const opinionForm = document.getElementById('opinion-form');
 
-    // Hardcoded Local Credentials Registry
+    // Secure Verification Map Registry
     const CREDENTIALS_REGISTRY = {
-        'admin': { password: 'adminpassword', role: 'Admin', name: 'System Administrator' },
+        'admin': { password: 'adminpassword', role: 'Admin', name: 'System Administrator (You)' },
         'user1': { password: 'userpassword', role: 'User', name: 'Standard Portal User' }
     };
 
-    // 1. AUTHENTICATION CONTROLLER
+    // 1. AUTHENTICATION CONTROLLER (Updated Privilege Check)
     function checkAuthState() {
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         const savedRole = localStorage.getItem('userRole');
         const savedName = localStorage.getItem('userDisplayName');
 
         if (isLoggedIn === 'true') {
-            authScreen.style.display = 'none';
-            appScreen.style.display = 'flex';
-            userDisplayName.textContent = savedName || 'User Portal';
+            if (authScreen) authScreen.style.setProperty('display', 'none', 'important');
+            if (appScreen) appScreen.style.display = 'flex';
+            if (userDisplayName) userDisplayName.textContent = savedName || 'User Portal';
             
-            // Adjust interface permissions dynamically based on active account role
+            // Target all administrative components
+            const adminButtons = document.querySelectorAll('.admin-action-btn');
+
             if (savedRole === 'Admin') {
-                portalRoleBadge.textContent = 'Admin Mode';
-                portalRoleBadge.style.color = '#ef4444';
+                if (portalRoleBadge) {
+                    portalRoleBadge.textContent = 'Admin Mode';
+                    portalRoleBadge.style.color = '#ef4444';
+                }
                 if (adminOnlyPanel) adminOnlyPanel.style.display = 'block';
+                
+                // FORCE SHOW action buttons ONLY for Admin
+                adminButtons.forEach(btn => {
+                    btn.style.setProperty('display', 'inline-block', 'important');
+                });
             } else {
-                portalRoleBadge.textContent = 'User View';
-                portalRoleBadge.style.color = '#3b82f6';
+                // FORCE LOCKDOWN for standard users
+                if (portalRoleBadge) {
+                    portalRoleBadge.textContent = 'User View (Read-Only)';
+                    portalRoleBadge.style.color = '#3b82f6';
+                }
                 if (adminOnlyPanel) adminOnlyPanel.style.display = 'none';
+                
+                // Force hide modifying buttons completely from standard users
+                adminButtons.forEach(btn => {
+                    btn.style.setProperty('display', 'none', 'important');
+                });
             }
 
-            handleRouting(); // run router logic when entering app
+            handleRouting(); 
         } else {
-            authScreen.style.display = 'flex';
-            appScreen.style.display = 'none';
-            window.location.hash = ''; // Force login isolation boundary
+            if (authScreen) authScreen.style.setProperty('display', 'flex', 'important');
+            if (appScreen) appScreen.style.display = 'none';
+            if (window.location.hash !== '') {
+                window.location.hash = ''; 
+            }
         }
     }
 
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const usernameInput = document.getElementById('username').value.trim().toLowerCase();
-        const passwordInput = document.getElementById('password').value;
-        
-        // Match credentials against local mock registry
-        const accountFound = CREDENTIALS_REGISTRY[usernameInput];
+    // OPINION FORM SUBMISSION LOGIC
+    if (opinionForm) {
+        opinionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const opinionText = document.getElementById('user-opinion-text').value;
+            alert(`Opinion received successfully!\n"${opinionText}"\nSaved to system dashboard logs.`);
+            document.getElementById('user-opinion-text').value = '';
+        });
+    }
 
-        if (accountFound && accountFound.password === passwordInput) {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userRole', accountFound.role);
-            localStorage.setItem('userDisplayName', accountFound.name);
-            authError.style.display = 'none';
-            
-            // Clear inputs safely
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            
+    // SEARCH FILTER LOGIC (AI Directory Component Filtering)
+    const searchInput = document.getElementById('directory-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.tool-card');
+            cards.forEach(card => {
+                const title = card.querySelector('h4').textContent.toLowerCase();
+                const text = card.querySelector('p').textContent.toLowerCase();
+                if (title.includes(term) || text.includes(term)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.clear(); 
             checkAuthState();
-            window.location.hash = '#dashboard'; // redirect into app workspace
-        } else {
-            authError.textContent = "Invalid username or password. Check credentials registry configuration.";
-            authError.style.display = 'block';
-        }
-    });
-
-    logoutBtn.addEventListener('click', () => {
-        localStorage.clear(); // Clear all auth data keys safely
-        checkAuthState();
-    });
-
+        });
+    }
 
     // 2. Client Side Hash Routing System
     function handleRouting() {

@@ -1,16 +1,15 @@
 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InfiniTR - Dashboard & Tools</title>
     <link rel="stylesheet" href="style.css">
-    <!-- FontAwesome for clean dashboard icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- Auth Gateway Screen -->
     <div id="auth-screen" class="auth-container">
         <div class="auth-card">
             <h2><i class="fa-solid fa-infinity"></i> InfiniTR Login</h2>
@@ -26,14 +25,12 @@
                 </div>
                 <button type="submit" class="btn-primary">Sign In</button>
             </form>
-            <div id="auth-error" class="error-msg">Invalid credentials. Hint: use any password to test!</div>
+            <div id="auth-error" class="error-msg">Invalid credentials.</div>
         </div>
     </div>
 
-    <!-- Main Application Wrapper (Hidden until logged in) -->
     <div id="app-screen" style="display: none;">
         
-        <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="sidebar-brand">
                 <h2><i class="fa-solid fa-infinity"></i> InfiniTR</h2>
@@ -64,72 +61,79 @@
             </div>
         </aside>
 
-        <!-- Main Content Area Area -->
         <main class="main-content">
             
-            <!-- SECTION: Dashboard -->
-<section id="dashboard-view" class="app-section">
-    <div class="section-header">
-        <h1>System Dashboard (<span id="portal-role-badge">User</span>)</h1>
-        <p>Overview of your integrated applications and system statistics.</p>
-    </div>
-    
-    <div class="stats-grid">
-        <div class="stat-card">
-            <i class="fa-solid fa-microchip icon-blue"></i>
-            <div><h3>AI Queries</h3><p class="stat-value">1,420</p></div>
-        </div>
-        <div class="stat-card">
-            <i class="fa-solid fa-bolt icon-green"></i>
-            <div><h3>API Status</h3><p class="stat-value">Active</p></div>
-        </div>
-        <div class="stat-card">
-            <i class="fa-solid fa-database icon-purple"></i>
-            <div><h3>Storage</h3><p class="stat-value">4.2 GB / 10 GB</p></div>
-        </div>
-    </div>
-
-    <!-- ADMIN ONLY PANEL (Hidden by default) -->
-    <div id="admin-only-panel" class="content-card" style="display: none; border: 1px solid #ef4444; margin-bottom: 1.5rem;">
-        <h3 style="color: #ef4444;"><i class="fa-solid fa-user-shield"></i> Admin Control Center</h3>
-        <p style="margin-bottom: 1rem; color: #94a3b8;">This control layout is restricted to administrative clearance accounts only.</p>
-        <div style="display: flex; gap: 1rem;">
-            <button class="btn-action" style="background: #ef4444;" onclick="alert('Flushing system cache...')">Flush Cache</button>
-            <button class="btn-action" style="background: #22c55e;" onclick="alert('System logs downloaded.')">Download System Logs</button>
-        </div>
-    </div>
-
-    <div class="content-card">
-        <h3>Recent Activity</h3>
-        <p>Welcome to your control room. Select features from the left navigation bar to interact with your environment.</p>
-    </div>
-</section>
-
-            <!-- SECTION: AI Directory -->
-            <section id="ai-directory-view" class="app-section" style="display: none;">
+            <section id="dashboard-view" class="app-section">
                 <div class="section-header">
-                    <h1>AI Directory</h1>
-                    <p>Quick access directory for integrated language models and tools.</p>
+                    <h1>System Dashboard (<span id="portal-role-badge">User</span>)</h1>
+                    <p>Overview of your integrated applications and system statistics.</p>
                 </div>
-                <div class="tools-grid">
-                    <div class="tool-card">
-                        <h4>Text Automation Model</h4>
-                        <p>Generates production code templates and assists file auditing workflows.</p>
-                        <button class="btn-action">Launch Agent</button>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <i class="fa-solid fa-microchip icon-blue"></i>
+                        <div><h3>AI Queries</h3><p class="stat-value">1,420</p></div>
                     </div>
-                    <div class="tool-card">
-                        <h4>Cyber Engine Suite</h4>
-                        <p>Security protocol tester and local sandbox network tool.</p>
-                        <button class="btn-action">Initialize Suite</button>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-bolt icon-green"></i>
+                        <div><h3>API Status</h3><p class="stat-value">Active</p></div>
                     </div>
+                    <div class="stat-card">
+                        <i class="fa-solid fa-database icon-purple"></i>
+                        <div><h3>Storage</h3><p class="stat-value">4.2 GB / 10 GB</p></div>
+                    </div>
+                </div>
+
+                <div id="admin-only-panel" class="content-card" style="display: none; border: 1px solid #ef4444; margin-bottom: 1.5rem;">
+                    <h3 style="color: #ef4444;"><i class="fa-solid fa-user-shield"></i> Admin Control Center</h3>
+                    <p style="margin-bottom: 1rem; color: #94a3b8;">This layout configures structural modifications across the platform environment.</p>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn-action" style="background: #ef4444;" onclick="alert('System cache flushed successfully!')">Flush Cache</button>
+                        <button class="btn-action" style="background: #22c55e;" onclick="alert('Configurations modified.')">Apply System Changes</button>
+                    </div>
+                </div>
+
+                <div class="content-card" style="margin-bottom: 1.5rem;">
+                    <h3><i class="fa-solid fa-newspaper" style="color: #eab308;"></i> Live News & Platform Updates</h3>
+                    <p style="margin-top: 0.5rem; color: #cbd5e1;"><strong>Update v2.4:</strong> High-speed client indexing has been optimized for subfolder directories. System monitoring panels are active.</p>
+                </div>
+
+                <div class="content-card">
+                    <h3><i class="fa-solid fa-comment-dots" style="color: #3b82f6;"></i> Share Your Opinion</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Submit your feedback directly to the system administrator.</p>
+                    <form id="opinion-form">
+                        <textarea id="user-opinion-text" rows="3" style="width:100%; background:var(--bg-main); border:1px solid var(--border); color:white; border-radius:6px; padding:0.75rem; resize:none; outline:none; font-size:0.95rem;" placeholder="Type your views or feedback here..." required></textarea>
+                        <button type="submit" class="btn-primary" style="width:auto; padding:0.5rem 1.5rem; margin-top:0.75rem;">Submit Opinion</button>
+                    </form>
                 </div>
             </section>
 
-            <!-- SECTION: Features -->
+            <section id="ai-directory-view" class="app-section" style="display: none;">
+                <div class="section-header">
+                    <h1>AI Directory</h1>
+                    <p>Search and read about integrated system agents.</p>
+                    <div style="margin-top: 1rem;">
+                        <input type="text" id="directory-search" placeholder="🔍 Search components..." style="width:100%; max-width:400px; padding:0.6rem; border-radius:6px; background:var(--bg-card); border:1px solid var(--border); color:white; outline:none;">
+                    </div>
+                </div>
+              <div class="tools-grid">
+    <div class="tool-card">
+        <h4>Text Automation Model</h4>
+        <p>Generates production code templates and assists file auditing workflows.</p>
+        <button class="btn-action admin-action-btn">Launch Agent</button>
+    </div>
+    <div class="tool-card">
+        <h4>Cyber Engine Suite</h4>
+        <p>Security protocol tester and local sandbox network tool.</p>
+        <button class="btn-action admin-action-btn">Initialize Suite</button>
+    </div>
+</div>
+            </section>
+
             <section id="features-view" class="app-section" style="display: none;">
                 <div class="section-header">
                     <h1>Core Features</h1>
-                    <p>Explore the full structural feature-set of InfiniTR.</p>
+                    <p>Explore the operational structural feature-set.</p>
                 </div>
                 <div class="content-card">
                     <h3>Modular Operations</h3>
@@ -137,11 +141,10 @@
                 </div>
             </section>
 
-            <!-- SECTION: Trends -->
             <section id="trends-view" class="app-section" style="display: none;">
                 <div class="section-header">
                     <h1>Market & Technical Trends</h1>
-                    <p>Real-time technical tracking charts.</p>
+                    <p>Real-time updates and active pipeline streams.</p>
                 </div>
                 <div class="content-card">
                     <h3>Data Streams</h3>
@@ -149,11 +152,10 @@
                 </div>
             </section>
 
-            <!-- SECTION: Resources -->
             <section id="resources-view" class="app-section" style="display: none;">
                 <div class="section-header">
                     <h1>Developer Resources</h1>
-                    <p>Access reference sheets and development manuals.</p>
+                    <p>Access engineering reference manuals.</p>
                 </div>
                 <div class="content-card">
                     <h3>Documentation Repository</h3>

@@ -17,20 +17,26 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
+html, body {
     background-color: var(--bg-main);
     color: var(--text-primary);
     overflow-x: hidden;
-    height: 100vh;
+    height: 100%;
+    width: 100%;
 }
 
-/* Auth Page Layout */
+/* Auth Page Layout - Fixed Centering Matrix */
 .auth-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
+    width: 100vw;
     background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
 }
 
 .auth-card {
@@ -38,7 +44,7 @@ body {
     padding: 2.5rem;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-    width: 100%;
+    width: 90%;
     max-width: 400px;
     border: 1px solid var(--border);
 }
@@ -91,6 +97,7 @@ body {
     font-weight: 600;
     cursor: pointer;
     transition: background 0.2s;
+    margin-top: 0.5rem;
 }
 
 .btn-primary:hover {
@@ -109,6 +116,7 @@ body {
 #app-screen {
     display: flex;
     height: 100vh;
+    width: 100vw;
 }
 
 .sidebar {
@@ -182,6 +190,7 @@ body {
     cursor: pointer;
     font-weight: 600;
     transition: background 0.2s;
+    text-align: center;
 }
 
 .btn-logout:hover {
@@ -277,5 +286,8 @@ body {
     cursor: pointer;
     font-size: 0.85rem;
 }
-
+/* Hide all admin actions by default across the entire application */
+.admin-action-btn {
+    display: none !important;
+}
 .btn-action:hover { background: var(--accent); }

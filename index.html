@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InfiniTR - Dashboard & Tools</title>
+    <title>InfiniTR - Advanced Portal Terminal</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -13,19 +12,19 @@
     <div id="auth-screen" class="auth-container">
         <div class="auth-card">
             <h2><i class="fa-solid fa-infinity"></i> InfiniTR Login</h2>
-            <p>Welcome back! Please sign in to access your portal.</p>
+            <p>Access the unified network portal environment.</p>
             <form id="login-form">
                 <div class="input-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" required placeholder="Enter username">
+                    <label for="username">Ident String (Username)</label>
+                    <input type="text" id="username" required placeholder="admin OR user1">
                 </div>
                 <div class="input-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" required placeholder="Enter password">
+                    <label for="password">Security Hash Key (Password)</label>
+                    <input type="password" id="password" required placeholder="adminpassword OR userpassword">
                 </div>
-                <button type="submit" class="btn-primary">Sign In</button>
+                <button type="submit" class="btn-primary">Verify Identity</button>
             </form>
-            <div id="auth-error" class="error-msg">Invalid credentials.</div>
+            <div id="auth-error" class="error-msg">Authorization rejected. Check system registry configurations.</div>
         </div>
     </div>
 
@@ -37,27 +36,27 @@
             </div>
             <nav class="sidebar-menu">
                 <a href="#dashboard" class="nav-link active" data-target="dashboard-view">
-                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                    <i class="fa-solid fa-chart-pie"></i> Control Center
                 </a>
                 <a href="#ai-directory" class="nav-link" data-target="ai-directory-view">
-                    <i class="fa-solid fa-robot"></i> AI Directory
+                    <i class="fa-solid fa-robot"></i> Agent Hub
                 </a>
                 <a href="#features" class="nav-link" data-target="features-view">
-                    <i class="fa-solid fa-layer-group"></i> Features
+                    <i class="fa-solid fa-layer-group"></i> Architecture
                 </a>
                 <a href="#trends" class="nav-link" data-target="trends-view">
-                    <i class="fa-solid fa-arrow-trend-up"></i> Trends
-                </a>
-                <a href="#resources" class="nav-link" data-target="resources-view">
-                    <i class="fa-solid fa-folder-open"></i> Resources
+                    <i class="fa-solid fa-arrow-trend-up"></i> Data Matrix
                 </a>
             </nav>
             <div class="sidebar-footer">
                 <div class="user-profile">
                     <i class="fa-solid fa-circle-user profile-icon"></i>
-                    <span id="user-display-name">User Portal</span>
+                    <div>
+                        <span id="user-display-name" style="display:block; font-weight:600; font-size:0.9rem;">Connecting...</span>
+                        <small id="user-role-sub text" style="color:var(--text-secondary); font-size:0.75rem;">Loading Identity...</small>
+                    </div>
                 </div>
-                <button id="logout-btn" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                <button id="logout-btn" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Disconnect</button>
             </div>
         </aside>
 
@@ -65,101 +64,112 @@
             
             <section id="dashboard-view" class="app-section">
                 <div class="section-header">
-                    <h1>System Dashboard (<span id="portal-role-badge">User</span>)</h1>
-                    <p>Overview of your integrated applications and system statistics.</p>
+                    <h1>Operational Dashboard (<span id="portal-role-badge">Syncing</span>)</h1>
+                    <p>Real-time analytics matrix and active data configurations.</p>
                 </div>
                 
                 <div class="stats-grid">
                     <div class="stat-card">
                         <i class="fa-solid fa-microchip icon-blue"></i>
-                        <div><h3>AI Queries</h3><p class="stat-value">1,420</p></div>
+                        <div><h3>Ecosystem Queries</h3><p class="stat-value" id="stats-queries-count">1,420</p></div>
                     </div>
                     <div class="stat-card">
                         <i class="fa-solid fa-bolt icon-green"></i>
-                        <div><h3>API Status</h3><p class="stat-value">Active</p></div>
+                        <div><h3>Interface Health</h3><p class="stat-value">Nominal</p></div>
                     </div>
                     <div class="stat-card">
                         <i class="fa-solid fa-database icon-purple"></i>
-                        <div><h3>Storage</h3><p class="stat-value">4.2 GB / 10 GB</p></div>
+                        <div><h3>Feedback Logs</h3><p class="stat-value" id="stats-feedback-count">0</p></div>
                     </div>
                 </div>
 
-                <div id="admin-only-panel" class="content-card" style="display: none; border: 1px solid #ef4444; margin-bottom: 1.5rem;">
-                    <h3 style="color: #ef4444;"><i class="fa-solid fa-user-shield"></i> Admin Control Center</h3>
-                    <p style="margin-bottom: 1rem; color: #94a3b8;">This layout configures structural modifications across the platform environment.</p>
-                    <div style="display: flex; gap: 1rem;">
-                        <button class="btn-action" style="background: #ef4444;" onclick="alert('System cache flushed successfully!')">Flush Cache</button>
-                        <button class="btn-action" style="background: #22c55e;" onclick="alert('Configurations modified.')">Apply System Changes</button>
+                <div id="admin-only-panel" class="content-card admin-action-btn" style="border: 1px solid #ef4444; margin-bottom: 1.5rem;">
+                    <h3 style="color: #ef4444;"><i class="fa-solid fa-user-shield"></i> Master Administrative Array</h3>
+                    <p style="margin-bottom: 1rem; color: #94a3b8;">This control interface operates directly on the platform system files. Users are locked out from accessing these commands.</p>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn-action" style="background: #ef4444;" id="admin-flush-btn">Purge User Storage Cache</button>
+                        <button class="btn-action" style="background: #22c55e;" id="admin-log-btn">Dump Opinion Ledger</button>
                     </div>
                 </div>
 
                 <div class="content-card" style="margin-bottom: 1.5rem;">
-                    <h3><i class="fa-solid fa-newspaper" style="color: #eab308;"></i> Live News & Platform Updates</h3>
-                    <p style="margin-top: 0.5rem; color: #cbd5e1;"><strong>Update v2.4:</strong> High-speed client indexing has been optimized for subfolder directories. System monitoring panels are active.</p>
+                    <h3><i class="fa-solid fa-newspaper" style="color: #eab308;"></i> Live Network Feed & Bulletins</h3>
+                    <p style="margin-top: 0.5rem; color: #cbd5e1;"><strong>Security Briefing:</strong> Role restrictions have been deployed. All core agent operations and global cache overrides are restricted to administrative clearance only.</p>
                 </div>
 
                 <div class="content-card">
                     <h3><i class="fa-solid fa-comment-dots" style="color: #3b82f6;"></i> Share Your Opinion</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Submit your feedback directly to the system administrator.</p>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Submit comments, thoughts, or interface feedback records directly into the local dashboard ledger.</p>
                     <form id="opinion-form">
-                        <textarea id="user-opinion-text" rows="3" style="width:100%; background:var(--bg-main); border:1px solid var(--border); color:white; border-radius:6px; padding:0.75rem; resize:none; outline:none; font-size:0.95rem;" placeholder="Type your views or feedback here..." required></textarea>
-                        <button type="submit" class="btn-primary" style="width:auto; padding:0.5rem 1.5rem; margin-top:0.75rem;">Submit Opinion</button>
+                        <textarea id="user-opinion-text" rows="3" style="width:100%; background:var(--bg-main); border:1px solid var(--border); color:white; border-radius:6px; padding:0.75rem; resize:none; outline:none; font-size:0.95rem;" placeholder="Type your commentary or system suggestions here..." required></textarea>
+                        <button type="submit" class="btn-primary" style="width:auto; padding:0.5rem 1.5rem; margin-top:0.75rem;">Submit Records</button>
                     </form>
                 </div>
             </section>
 
             <section id="ai-directory-view" class="app-section" style="display: none;">
                 <div class="section-header">
-                    <h1>AI Directory</h1>
-                    <p>Search and read about integrated system agents.</p>
-                    <div style="margin-top: 1rem;">
-                        <input type="text" id="directory-search" placeholder="🔍 Search components..." style="width:100%; max-width:400px; padding:0.6rem; border-radius:6px; background:var(--bg-card); border:1px solid var(--border); color:white; outline:none;">
+                    <h1>Ecosystem Agent Hub</h1>
+                    <p>Search, scan, or launch open-source autonomous modules and mocked web indexes.</p>
+                    
+                    <div class="search-wrapper" style="margin-top: 1.5rem;">
+                        <i class="fa-solid fa-magnifying-glass search-icon" style="position: absolute; margin: 0.75rem; color: var(--text-secondary);"></i>
+                        <input type="text" id="global-search-bar" placeholder="Search built-in models or simulate web crawling (e.g., 'news', 'AI', 'system')..." style="width:100%; max-width:600px; padding:0.65rem 0.65rem 0.65rem 2.5rem; border-radius:6px; background:var(--bg-card); border:1px solid var(--border); color:white; outline:none; font-size:0.95rem;">
                     </div>
                 </div>
-              <div class="tools-grid">
-    <div class="tool-card">
-        <h4>Text Automation Model</h4>
-        <p>Generates production code templates and assists file auditing workflows.</p>
-        <button class="btn-action admin-action-btn">Launch Agent</button>
-    </div>
-    <div class="tool-card">
-        <h4>Cyber Engine Suite</h4>
-        <p>Security protocol tester and local sandbox network tool.</p>
-        <button class="btn-action admin-action-btn">Initialize Suite</button>
-    </div>
-</div>
+
+                <div id="web-search-results-box" class="content-card" style="display:none; margin-bottom: 1.5rem; border: 1px solid var(--accent);">
+                    <h4 style="color: var(--accent); margin-bottom: 0.75rem;"><i class="fa-solid fa-globe"></i> Simulated Cloud Web Crawl Results</h4>
+                    <div id="search-results-output-container" style="display:flex; flex-direction:column; gap:0.75rem;"></div>
+                </div>
+
+                <div class="tools-grid" id="agents-grid-container">
+                    <div class="tool-card" data-tags="text automation builder templates files code">
+                        <div class="card-badge">Free Tier</div>
+                        <h4><i class="fa-solid fa-code"></i> Code & Text Automation Model</h4>
+                        <p>Generates production script scaffolding, filters strings, and parses system logic schemas.</p>
+                        <button class="btn-action admin-action-btn">Launch Agent Execution</button>
+                    </div>
+                    <div class="tool-card" data-tags="cyber engine security network sandbox tools">
+                        <div class="card-badge">Security Core</div>
+                        <h4><i class="fa-solid fa-shield-halved"></i> Cyber Analytics Engine Suite</h4>
+                        <p>Evaluates transport security rules and handles local virtual container execution maps.</p>
+                        <button class="btn-action admin-action-btn">Initialize Security Matrix</button>
+                    </div>
+                    <div class="tool-card" data-tags="translation language models cross regional multi">
+                        <div class="card-badge">Free Tier</div>
+                        <h4><i class="fa-solid fa-language"></i> Multi-Lingual Translation Core</h4>
+                        <p>Translates document assets, structures data keys across formats, and resolves interface localization assets.</p>
+                        <button class="btn-action admin-action-btn">Deploy Translator Engine</button>
+                    </div>
+                    <div class="tool-card" data-tags="vision image processing visual neural intelligence matrix">
+                        <div class="card-badge">Media Engine</div>
+                        <h4><i class="fa-solid fa-eye"></i> Vision Matrix Array</h4>
+                        <p>Processes image data maps, scans security feeds, and checks for irregularities in visual inputs.</p>
+                        <button class="btn-action admin-action-btn">Spin Up Vision Stream</button>
+                    </div>
+                </div>
             </section>
 
             <section id="features-view" class="app-section" style="display: none;">
                 <div class="section-header">
-                    <h1>Core Features</h1>
-                    <p>Explore the operational structural feature-set.</p>
+                    <h1>Platform Architecture</h1>
+                    <p>Details regarding the client-side system build.</p>
                 </div>
                 <div class="content-card">
-                    <h3>Modular Operations</h3>
-                    <p>InfiniTR supports dynamic client-side hashing, minimizing load constraints over remote networks.</p>
+                    <h3>Modular Hash Scaffolding</h3>
+                    <p>InfiniTR leverages zero-latency client-side routing, making the application snappy even when running over static networks like GitHub Pages.</p>
                 </div>
             </section>
 
             <section id="trends-view" class="app-section" style="display: none;">
                 <div class="section-header">
-                    <h1>Market & Technical Trends</h1>
-                    <p>Real-time updates and active pipeline streams.</p>
+                    <h1>Pipeline Metrics Data Matrix</h1>
+                    <p>Active tracking readouts for running processes.</p>
                 </div>
                 <div class="content-card">
-                    <h3>Data Streams</h3>
-                    <p>System metrics monitoring terminal pipeline is operating nominally.</p>
-                </div>
-            </section>
-
-            <section id="resources-view" class="app-section" style="display: none;">
-                <div class="section-header">
-                    <h1>Developer Resources</h1>
-                    <p>Access engineering reference manuals.</p>
-                </div>
-                <div class="content-card">
-                    <h3>Documentation Repository</h3>
-                    <p>Select libraries, setup environments, and code snippets cataloged for execution.</p>
+                    <h3>Sub-System Process Nodes</h3>
+                    <p>All process queues and technical metrics monitors are operating optimally.</p>
                 </div>
             </section>
 

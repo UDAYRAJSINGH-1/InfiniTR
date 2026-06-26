@@ -1,6 +1,13 @@
 // Infinitr AI Tracking Website - JavaScript
 document.addEventListener('DOMContentLoaded', () => {
     
+    // ==========================================
+    // ⚙️ CLOUD DATABASE CONFIGURATION
+    // ==========================================
+    // PLACE YOUR ACTUAL SUPABASE KEYS HERE
+    const SUPABASE_URL = "https://bdthpyarytpqeohxjtwl.supabase.co"; 
+    const SUPABASE_KEY = "sb_publishable_xxyOIvtN9Gpj0ZjxC2wLHw_9yWhvXdx";          
+
     // Core Platform Element Access Selectors
     const authScreen = document.getElementById('auth-screen');
     const appScreen = document.getElementById('app-screen');
@@ -19,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const statsQueriesCount = document.getElementById('stats-queries-count');
     const statsFeedbackCount = document.getElementById('stats-feedback-count');
 
-    // Verification Map Storage Keys Configuration
+    // Hardcoded Verification Credentials Matrix (Can be left on front-end for simulation role gating)
     const CREDENTIALS_REGISTRY = {
         'admin': { password: 'adminpassword', role: 'Admin', name: 'Udayraj Singh' },
         'user1': { password: 'userpassword', role: 'User', name: 'Standard Auditor' }
@@ -33,23 +40,34 @@ document.addEventListener('DOMContentLoaded', () => {
         { title: "System Dashboard Integration Guide", snippet: "How to bind localStorage states to capture user interaction lists dynamically without dedicated database instances.", category: "system" }
     ];
 
-    // 1. DATA INFRASTRUCTURE ARCHITECTURE LOGIC (MOCK DATABASE)
+    // 1. DATA INFRASTRUCTURE ARCHITECTURE LOGIC (HYBRID CLOUD FRAMEWORK)
     function initializeDatabaseState() {
-        if (!localStorage.getItem('database_opinions')) {
-            localStorage.setItem('database_opinions', JSON.stringify([]));
-        }
         if (!localStorage.getItem('database_query_clicks')) {
             localStorage.setItem('database_query_clicks', '1420');
         }
         renderLedgerMetrics();
     }
 
-    function renderLedgerMetrics() {
-        const opinionsList = JSON.parse(localStorage.getItem('database_opinions') || '[]');
+    async function renderLedgerMetrics() {
         const totalClicks = localStorage.getItem('database_query_clicks') || '1420';
-        
-        if (statsFeedbackCount) statsFeedbackCount.textContent = opinionsList.length;
         if (statsQueriesCount) statsQueriesCount.textContent = totalClicks;
+
+        // Fetch the live total count directly from Supabase Cloud
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/user_opinions?select=id`, {
+                method: 'GET',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                if (statsFeedbackCount) statsFeedbackCount.textContent = data.length;
+            }
+        } catch (err) {
+            console.error("Failed to fetch cloud counter snapshot:", err);
+        }
     }
 
     // 2. PRIVILEGE VERIFICATION ENGINE
@@ -73,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (adminOnlyPanel) adminOnlyPanel.style.setProperty('display', 'block', 'important');
                 
-                // UNLOCK INTERFACE MODIFICATIONS FOR YOU ONLY
+                // UNLOCK INTERFACE MODIFICATIONS FOR ADMINS
                 adminButtons.forEach(btn => {
                     btn.style.setProperty('display', 'inline-block', 'important');
                 });
@@ -114,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('userRole', accountFound.role);
                 localStorage.setItem('userDisplayName', accountFound.name);
+                localStorage.setItem('userRawUsername', usernameInput);
                 
                 if (authError) authError.style.display = 'none';
                 document.getElementById('username').value = '';
@@ -130,43 +149,89 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // USER FEEDBACK ENGINE SUBMISSION
+    // 🌐 USER FEEDBACK CLOUD ENGINE SUBMISSION (Supabase Target Injection)
     if (opinionForm) {
-        opinionForm.addEventListener('submit', (e) => {
+        opinionForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const textarea = document.getElementById('user-opinion-text');
             const newOpinion = textarea.value.trim();
             
-            const databaseList = JSON.parse(localStorage.getItem('database_opinions') || '[]');
-            databaseList.push({
-                user: localStorage.getItem('userDisplayName') || 'Anonymous',
-                timestamp: new Date().toISOString(),
+            const payload = {
+                username: localStorage.getItem('userRawUsername') || 'anonymous',
+                display_name: localStorage.getItem('userDisplayName') || 'Anonymous',
                 content: newOpinion
-            });
-            
-            localStorage.setItem('database_opinions', JSON.stringify(databaseList));
-            alert("Record successfully written into internal simulation log database!");
-            textarea.value = '';
-            renderLedgerMetrics();
+            };
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/user_opinions`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert("Record written directly to the global cloud database! 🔥");
+                    textarea.value = '';
+                    renderLedgerMetrics();
+                } else {
+                    alert("Cloud rejected request. Verify your database connection keys.");
+                }
+            } catch (err) {
+                console.error("Network interface error:", err);
+                alert("Failed to hit global network database engine.");
+            }
         });
     }
 
     // ADMINISTRATIVE TOOL CHAIN ASSIGNMENTS
     const adminFlushBtn = document.getElementById('admin-flush-btn');
     if (adminFlushBtn) {
-        adminFlushBtn.addEventListener('click', () => {
-            localStorage.setItem('database_opinions', JSON.stringify([]));
-            localStorage.setItem('database_query_clicks', '1420');
-            alert("Database structures flushed to default factory values!");
-            renderLedgerMetrics();
+        adminFlushBtn.addEventListener('click', async () => {
+            if (confirm("Are you sure you want to drop all cloud database feedback records?")) {
+                try {
+                    // Send a structural DELETE query clear out table records across the network
+                    const response = await fetch(`${SUPABASE_URL}/rest/v1/user_opinions?id=neq.0`, {
+                        method: 'DELETE',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': `Bearer ${SUPABASE_KEY}`
+                        }
+                    });
+                    if (response.ok) {
+                        localStorage.setItem('database_query_clicks', '1420');
+                        alert("Cloud database records flushed to default factory specs!");
+                        renderLedgerMetrics();
+                    }
+                } catch (err) {
+                    console.error("Administrative purge execution dropped:", err);
+                }
+            }
         });
     }
 
     const adminLogBtn = document.getElementById('admin-log-btn');
     if (adminLogBtn) {
-        adminLogBtn.addEventListener('click', () => {
-            const opinions = localStorage.getItem('database_opinions');
-            alert("--- DATABASE USER OPINIONS LEDGER DUMP ---\n\n" + opinions);
+        adminLogBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/user_opinions?select=*&order=created_at.desc`, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    alert("--- GLOBAL CLOUD OPINIONS LEDGER DUMP ---\n\n" + JSON.stringify(data, null, 2));
+                }
+            } catch (err) {
+                console.error("Could not dump cloud ledger data streams:", err);
+            }
         });
     }
 
@@ -238,6 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userRole');
             localStorage.removeItem('userDisplayName');
+            localStorage.removeItem('userRawUsername');
             checkAuthState();
         });
     }

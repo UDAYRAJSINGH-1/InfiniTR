@@ -106,19 +106,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2. Client Side Hash Routing System
+    // 2. Client Side Hash Routing System (Scrubbed and Bulletproofed)
     function handleRouting() {
         if (localStorage.getItem('isLoggedIn') !== 'true') return;
 
+        // Clean up the hash to prevent "?#ai-directory" or unexpected symbols from crashing the layout
         let currentHash = window.location.hash;
         
+        // If the URL contains a query question mark before the hash, isolate just the hash token
+        if (window.location.href.includes('?')) {
+            const parts = window.location.href.split('#');
+            if (parts.length > 1) {
+                currentHash = '#' + parts[1];
+            }
+        }
+
+        // Fallback default view if empty
         if (!currentHash || currentHash === '#') {
             currentHash = '#dashboard';
         }
 
+        // Hide all views and deactivate navbar highlights
         sections.forEach(sec => sec.style.display = 'none');
         navLinks.forEach(link => link.classList.remove('active'));
 
+        // Match current cleaned hash target to its section link attributes
         const targetLink = document.querySelector(`.nav-link[href="${currentHash}"]`);
         
         if (targetLink) {
@@ -129,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetSection.style.display = 'block';
             }
         } else {
+            // Safe fallback defaults
             const defaultDashboard = document.getElementById('dashboard-view');
             if (defaultDashboard) defaultDashboard.style.display = 'block';
             const dashLink = document.querySelector('.nav-link[href="#dashboard"]');

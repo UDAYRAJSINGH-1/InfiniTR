@@ -9,22 +9,34 @@
 </head>
 <body>
 
-    <div id="auth-screen" class="auth-container">
-        <div class="auth-card">
-            <h2><i class="fa-solid fa-infinity"></i> InfiniTR Login</h2>
-            <p>Access the unified network portal environment.</p>
-            <form id="login-form">
-                <div class="input-group">
-                    <label for="username">Ident String (Username)</label>
-                    <input type="text" id="username" required placeholder="admin OR user1">
+    <div id="auth-screen" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #0f172a; font-family: sans-serif;">
+        <div style="background: #1e293b; padding: 2.5rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); width: 100%; max-width: 400px; text-align: center;">
+            
+            <div id="login-logo-container" style="margin-bottom: 1.5rem;">
+                <div style="display: inline-block; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; padding: 0.75rem 1.5rem; font-weight: bold; border-radius: 8px; font-size: 1.25rem; letter-spacing: 1px;">
+                    InfiniTR
                 </div>
-                <div class="input-group">
-                    <label for="password">Security Hash Key (Password)</label>
-                    <input type="password" id="password" required placeholder="adminpassword OR userpassword">
+            </div>
+
+            <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1.5rem;">System Authentication</h3>
+            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 2rem;">Secure Entry Gateway Pipeline</p>
+
+            <form id="login-form" style="text-align: left;">
+                <div style="margin-bottom: 1.25rem;">
+                    <label style="display: block; color: #cbd5e1; font-size: 0.85rem; margin-bottom: 0.5rem;">Username</label>
+                    <input type="text" id="username" required style="width: 100%; padding: 0.75rem; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: white; outline: none; box-sizing: border-box;">
                 </div>
-                <button type="submit" class="btn-primary">Verify Identity</button>
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; color: #cbd5e1; font-size: 0.85rem; margin-bottom: 0.5rem;">Password</label>
+                    <input type="password" id="password" required style="width: 100%; padding: 0.75rem; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: white; outline: none; box-sizing: border-box;">
+                </div>
+                
+                <div id="auth-error" style="color: #ef4444; font-size: 0.8rem; margin-bottom: 1rem; display: none;"></div>
+
+                <button type="submit" style="width: 100%; padding: 0.75rem; background: #3b82f6; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; transition: background 0.2s;">
+                    Authorize Session
+                </button>
             </form>
-            <div id="auth-error" class="error-msg">Authorization rejected. Check system registry configurations.</div>
         </div>
     </div>
 
@@ -53,7 +65,7 @@
                     <i class="fa-solid fa-circle-user profile-icon"></i>
                     <div>
                         <span id="user-display-name" style="display:block; font-weight:600; font-size:0.9rem;">Connecting...</span>
-                        <small id="user-role-sub text" style="color:var(--text-secondary); font-size:0.75rem;">Loading Identity...</small>
+                        <small id="user-role-sub" style="color:var(--text-secondary); font-size:0.75rem;">Loading Identity...</small>
                     </div>
                 </div>
                 <button id="logout-btn" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Disconnect</button>
@@ -97,13 +109,23 @@
                     <p style="margin-top: 0.5rem; color: #cbd5e1;"><strong>Security Briefing:</strong> Role restrictions have been deployed. All core agent operations and global cache overrides are restricted to administrative clearance only.</p>
                 </div>
 
-                <div class="content-card">
+                <div class="content-card" style="margin-bottom: 1.5rem;">
                     <h3><i class="fa-solid fa-comment-dots" style="color: #3b82f6;"></i> Share Your Opinion</h3>
                     <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Submit comments, thoughts, or interface feedback records directly into the local dashboard ledger.</p>
                     <form id="opinion-form">
                         <textarea id="user-opinion-text" rows="3" style="width:100%; background:var(--bg-main); border:1px solid var(--border); color:white; border-radius:6px; padding:0.75rem; resize:none; outline:none; font-size:0.95rem;" placeholder="Type your commentary or system suggestions here..." required></textarea>
                         <button type="submit" class="btn-primary" style="width:auto; padding:0.5rem 1.5rem; margin-top:0.75rem;">Submit Records</button>
                     </form>
+                </div>
+
+                <div class="content-card" style="margin-top: 1.5rem;">
+                    <h4 style="color: white; margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="display: inline-block; width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></span>
+                        Live Platform Submissions Feed (Cloud-Connected)
+                    </h4>
+                    <div id="opinions-timeline-container" style="max-height: 400px; overflow-y: auto; padding-right: 0.25rem;">
+                        <p style="color: var(--text-secondary); font-style: italic;">Connecting to data nodes stream...</p>
+                    </div>
                 </div>
             </section>
 

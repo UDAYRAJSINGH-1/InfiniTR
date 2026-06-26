@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const SUPABASE_URL = "https://bdthpyarytpqeohxjtwl.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_xxyOIvtN9Gpj0ZjxC2wLHw_9yWhvXdx";          
 
-    // Core Platform Element Access Selectors
     const authScreen = document.getElementById('auth-screen');
     const appScreen = document.getElementById('app-screen');
     const loginForm = document.getElementById('login-form');
@@ -26,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const statsQueriesCount = document.getElementById('stats-queries-count');
     const statsFeedbackCount = document.getElementById('stats-feedback-count');
 
-    // Hardcoded Verification Credentials Matrix (Can be left on front-end for simulation role gating)
+    // Hardcoded Verification Credentials Matrix
     const CREDENTIALS_REGISTRY = {
         'admin': { password: 'adminpassword', role: 'Admin', name: 'Udayraj Singh' },
         'user1': { password: 'userpassword', role: 'User', name: 'Standard Auditor' }
@@ -46,13 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('database_query_clicks', '1420');
         }
         renderLedgerMetrics();
+        fetchLiveOpinionsTimeline(); // Automatically load live timeline stream on boot
     }
 
     async function renderLedgerMetrics() {
         const totalClicks = localStorage.getItem('database_query_clicks') || '1420';
         if (statsQueriesCount) statsQueriesCount.textContent = totalClicks;
 
-        // Fetch the live total count directly from Supabase Cloud
         try {
             const response = await fetch(`${SUPABASE_URL}/rest/v1/user_opinions?select=id`, {
                 method: 'GET',
@@ -67,6 +66,46 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (err) {
             console.error("Failed to fetch cloud counter snapshot:", err);
+        }
+    }
+
+    // 🔄 NEW: FETCH & RENDER LIVE TIMELINE DATA FROM SUPABASE
+    async function fetchLiveOpinionsTimeline() {
+        const timelineContainer = document.getElementById('opinions-timeline-container');
+        if (!timelineContainer) return;
+
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/user_opinions?select=*&order=created_at.desc`, {
+                method: 'GET',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.length === 0) {
+                    timelineContainer.innerHTML = `<p style="color: var(--text-secondary); font-style: italic; padding: 1rem;">No data records found inside live cloud tables.</p>`;
+                    return;
+                }
+
+                timelineContainer.innerHTML = data.map(item => {
+                    const formattedDate = new Date(item.created_at).toLocaleString();
+                    return `
+                        <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 6px; margin-bottom: 0.75rem; border-left: 3px solid var(--accent); transition: 0.2s;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                                <strong style="color: white; font-size: 0.95rem;">${item.display_name} <span style="font-weight: normal; color: var(--text-secondary); font-size: 0.8rem;">(@${item.username})</span></strong>
+                                <small style="color: var(--text-secondary); font-size: 0.75rem;">${formattedDate}</small>
+                            </div>
+                            <p style="color: #e2e8f0; font-size: 0.9rem; line-height: 1.4; margin: 0;">${item.content}</p>
+                        </div>
+                    `;
+                }).join('');
+            }
+        } catch (err) {
+            console.error("Failed syncing cloud live datastream feed:", err);
+            timelineContainer.innerHTML = `<p style="color: #ef4444; font-size: 0.85rem; padding: 1rem;">Network interface link offline.</p>`;
         }
     }
 
@@ -91,25 +130,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 if (adminOnlyPanel) adminOnlyPanel.style.setProperty('display', 'block', 'important');
                 
-                // UNLOCK INTERFACE MODIFICATIONS FOR ADMINS
                 adminButtons.forEach(btn => {
                     btn.style.setProperty('display', 'inline-block', 'important');
                 });
             } else {
-                // HARD LOCKDOWN STANDARD USER INTERFACE PANELS
                 if (portalRoleBadge) {
                     portalRoleBadge.textContent = 'User Space (Read-Only Terminal)';
                     portalRoleBadge.style.color = '#3b82f6';
                 }
                 if (adminOnlyPanel) adminOnlyPanel.style.setProperty('display', 'none', 'important');
                 
-                // Force-hide structural launch modifiers from standard users completely
                 adminButtons.forEach(btn => {
                     btn.style.setProperty('display', 'none', 'important');
                 });
             }
 
             renderLedgerMetrics();
+            fetchLiveOpinionsTimeline(); // Sync fresh records upon view entrance
             handleRouting(); 
         } else {
             if (authScreen) authScreen.style.setProperty('display', 'flex', 'important');
@@ -149,12 +186,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 🌐 USER FEEDBACK CLOUD ENGINE SUBMISSION (Supabase Target Injection)
+    // 🌐 USER FEEDBACK CLOUD ENGINE SUBMISSION
     if (opinionForm) {
         opinionForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const textarea = document.getElementById('user-opinion-text');
             const newOpinion = textarea.value.trim();
+            if(!newOpinion) return;
             
             const payload = {
                 username: localStorage.getItem('userRawUsername') || 'anonymous',
@@ -175,15 +213,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    alert("Record written directly to the global cloud database! 🔥");
                     textarea.value = '';
                     renderLedgerMetrics();
+                    fetchLiveOpinionsTimeline(); // Re-render feed items dynamically without alerts
                 } else {
                     alert("Cloud rejected request. Verify your database connection keys.");
                 }
             } catch (err) {
                 console.error("Network interface error:", err);
-                alert("Failed to hit global network database engine.");
             }
         });
     }
@@ -194,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
         adminFlushBtn.addEventListener('click', async () => {
             if (confirm("Are you sure you want to drop all cloud database feedback records?")) {
                 try {
-                    // Send a structural DELETE query clear out table records across the network
                     const response = await fetch(`${SUPABASE_URL}/rest/v1/user_opinions?id=neq.0`, {
                         method: 'DELETE',
                         headers: {
@@ -204,8 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     if (response.ok) {
                         localStorage.setItem('database_query_clicks', '1420');
-                        alert("Cloud database records flushed to default factory specs!");
                         renderLedgerMetrics();
+                        fetchLiveOpinionsTimeline();
                     }
                 } catch (err) {
                     console.error("Administrative purge execution dropped:", err);
@@ -216,22 +252,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const adminLogBtn = document.getElementById('admin-log-btn');
     if (adminLogBtn) {
-        adminLogBtn.addEventListener('click', async () => {
-            try {
-                const response = await fetch(`${SUPABASE_URL}/rest/v1/user_opinions?select=*&order=created_at.desc`, {
-                    method: 'GET',
-                    headers: {
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`
-                    }
-                });
-                if (response.ok) {
-                    const data = await response.json();
-                    alert("--- GLOBAL CLOUD OPINIONS LEDGER DUMP ---\n\n" + JSON.stringify(data, null, 2));
-                }
-            } catch (err) {
-                console.error("Could not dump cloud ledger data streams:", err);
-            }
+        adminLogBtn.addEventListener('click', () => {
+            fetchLiveOpinionsTimeline();
         });
     }
 
@@ -251,7 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            // A. Screen local agent cards using metadata data-tags attributes
             cards.forEach(card => {
                 const searchTags = card.getAttribute('data-tags') || '';
                 const cardTitle = card.querySelector('h4').textContent.toLowerCase();
@@ -264,7 +285,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // B. Simulate an external query crawl to pull matching records from the mock global database
             const filteredWebResults = INTERNET_SEARCH_MOCK_DATABASE.filter(item => 
                 item.title.toLowerCase().includes(term) || 
                 item.snippet.toLowerCase().includes(term) || 
@@ -287,14 +307,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Increment tracker metrics when components trigger action configurations
     document.querySelectorAll('.admin-action-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             let currentClicks = parseInt(localStorage.getItem('database_query_clicks') || '1420');
             currentClicks++;
             localStorage.setItem('database_query_clicks', currentClicks.toString());
             renderLedgerMetrics();
-            alert("Agent execution block generated successfully!");
         });
     });
 

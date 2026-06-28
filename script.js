@@ -6,6 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     const SUPABASE_URL = "https://bdthpyarytpqeohxjtwl.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_xxyOIvtN9Gpj0ZjxC2wLHw_9yWhvXdx";          
+    
+    // Global Constants (Make sure these are defined at the very top of your file!)
+    // const SUPABASE_URL = "your_supabase_url";
+    // const SUPABASE_KEY = "your_supabase_anon_key";
 
     const authScreen = document.getElementById('auth-screen');
     const loginForm = document.getElementById('login-form');
@@ -27,8 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     const CREDENTIALS_REGISTRY = {
         'admin@infinitr.io': { password: 'Uday3333', role: 'Administrator Tier', name: 'admin@infinitr.io' },
-        'member@infinitr.io': { password: 'Uday9734', role: 'Premium Tier User', name: 'member@infinitr.io' },
-        'auditor@infinitr.io': { password: 'Uday9734', role: 'Standard Tier User', name: 'auditor@infinitr.io' }
+        'member@infinitr.io': { password: 'Uday4973', role: 'Premium Tier User', name: 'member@infinitr.io' },
+        'auditor@infinitr.io': { password: 'Uday4973', role: 'Standard Tier User', name: 'auditor@infinitr.io' }
     };
 
     // 1. SESSION MANAGEMENT LIFECYCLE
@@ -56,13 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (loginTriggerBtn) loginTriggerBtn.style.display = "inline-block";
         }
         
-        renderLedgerMetrics();
-        fetchLiveOpinionsTimeline();
+        // Safely fire off page-specific functions
+        if (statsQueriesCount || statsFeedbackCount) { renderLedgerMetrics(); }
+        if (document.getElementById('opinions-timeline-container')) { fetchLiveOpinionsTimeline(); }
     }
 
     // Modal Interaction Handlers
-    if (loginTriggerBtn) { loginTriggerBtn.addEventListener('click', () => { authScreen.style.display = "flex"; }); }
-    if (authCloseBtn) { authCloseBtn.addEventListener('click', () => { authScreen.style.display = "none"; }); }
+    if (loginTriggerBtn) { loginTriggerBtn.addEventListener('click', () => { if (authScreen) authScreen.style.display = "flex"; }); }
+    if (authCloseBtn) { authCloseBtn.addEventListener('click', () => { if (authScreen) authScreen.style.display = "none"; }); }
 
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
@@ -149,10 +154,12 @@ document.addEventListener('DOMContentLoaded', () => {
         opinionForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (localStorage.getItem('isLoggedIn') !== 'true') {
-                authScreen.style.display = "flex";
+                if (authScreen) authScreen.style.display = "flex";
                 return;
             }
             const textarea = document.getElementById('user-opinion-text');
+            if (!textarea) return;
+
             const payload = {
                 username: localStorage.getItem('userRawUsername') || 'anonymous',
                 display_name: localStorage.getItem('userDisplayName') || 'Anonymous User',
@@ -172,6 +179,57 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 if (response.ok) { textarea.value = ''; renderLedgerMetrics(); fetchLiveOpinionsTimeline(); }
             } catch (err) { console.error(err); }
+        });
+    }
+
+    // ==========================================
+    // 📨 UNIFIED CONTACT FORM SUBMISSION HANDLER
+    // ==========================================
+    const contactForm = document.getElementById('contact-form');
+    
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const nameInput = document.getElementById('contact-name')?.value.trim() || 'Anonymous';
+            const emailInput = document.getElementById('contact-email')?.value.trim() || 'No Email';
+            const messageInput = document.getElementById('contact-message')?.value.trim() || '';
+
+            if (!messageInput) {
+                alert("Please write a message payload before dispatching.");
+                return;
+            }
+
+            const submissionPayload = {
+                name: nameInput,
+                email: emailInput,
+                message: messageInput
+            };
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/contact_submissions`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(submissionPayload)
+                });
+
+                if (response.ok) {
+                    alert("Message secured and transmitted successfully!");
+                    contactForm.reset();
+                } else {
+                    const errData = await response.json();
+                    alert("Database rejected submission. Make sure RLS is open or configured for INSERT.");
+                    console.error("Supabase Error Details:", errData);
+                }
+            } catch (err) {
+                console.error("Network connection offline:", err);
+                alert("Network routing error occurred.");
+            }
         });
     }
 

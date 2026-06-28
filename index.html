@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InfiniTR // Advanced Predictive Workspace</title>
+  <title>InfiniTR // Predictive AI Market Engine</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,6 +11,30 @@
   <link rel="stylesheet" href="style.css">
   
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  
+  <style>
+    /* Retaining specific homepage layout elements safely overriding global styles */
+    .dashboard-layout {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 3rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+    }
+    .main-stream { display: flex; flex-direction: column; gap: 2rem; }
+    .card-panel { background-color: #0D1321; border: 1px solid #1E293B; border-radius: 12px; padding: 2rem; }
+    .panel-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; margin-bottom: 1rem; color: #FFFFFF; }
+    .chart-box-wrapper { position: relative; width: 100%; height: 320px; }
+    .news-stream-list { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1rem; }
+    .news-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
+    .news-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748B; margin-bottom: 0.35rem; }
+    .news-title { font-size: 0.9rem; font-weight: 600; line-height: 1.4; color: #FFFFFF; }
+    .comment-composer { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+    .comment-input { flex: 1; background-color: #060913; border: 1px solid #1E293B; border-radius: 8px; padding: 0.75rem; color: #FFFFFF; outline: none; }
+    .comment-submit { background-color: #FFFFFF; color: #060913; border: none; padding: 0 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    .comments-thread { display: flex; flex-direction: column; gap: 1.25rem; }
+  </style>
 </head>
 <body>
 
@@ -27,7 +51,7 @@
     <div class="profile-pill">
       <div class="user-meta-block">
         <span id="user-display-name" class="user-email">guest_account@infinitr.io</span>
-        <small id="user-role-sub" style="color: var(--text-muted); display: block; font-size: 0.7rem;"></small>
+        <small id="user-role-sub" style="color: #64748B; display: block; font-size: 0.7rem;"></small>
       </div>
       <span id="portal-role-badge" style="font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.4rem; background: rgba(255,255,255,0.05); border-radius: 4px; display: none;"></span>
       <button id="logout-btn" class="auth-btn" style="display: none;">Log Out</button>
@@ -35,85 +59,64 @@
     </div>
   </nav>
 
- <div id="auth-screen" class="auth-container" style="display: none;">
-  <div class="auth-card">
-    <div class="auth-close" id="auth-close-btn">&times;</div>
-    <h2>INFINI<span>TR</span></h2>
-    <p>Enter your profile credentials to sync with the tracking matrix stream.</p>
-    <form id="login-form">
-      <div class="input-group">
-        <label for="username">Enter Your Email</label>
-        <input type="text" id="username" placeholder="member@infinitr.io" required autocomplete="email">
-      </div>
-      <div class="input-group">
-        <label for="password">Enter Your Password</label>
-        <input type="password" id="password" placeholder="••••••••" required>
-      </div>
-      <button type="submit" class="btn-primary">SUBMIT</button>
-      <div id="auth-error" class="error-msg"></div>
-    </form>
-  </div>
-</div>
-
-  <div id="app-screen">
-    <main class="dashboard-layout">
-      <div class="main-stream">
-        
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-info">
-              <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Total Stream Inquiries</span>
-              <div id="stats-queries-count" class="stat-value icon-blue">0</div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-info">
-              <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Community Shared Insights</span>
-              <div id="stats-feedback-count" class="stat-value icon-green">0</div>
-            </div>
-          </div>
+  <div id="auth-screen" class="auth-container" style="display: none;">
+    <div class="auth-card">
+      <div class="auth-close" id="auth-close-btn">&times;</div>
+      <h2>INFINI<span>TR</span></h2>
+      <p>Enter your profile credentials to sync with the tracking matrix stream.</p>
+      <form id="login-form">
+        <div class="input-group">
+          <label for="username">Enter Your Email</label>
+          <input type="text" id="username" placeholder="member@infinitr.io" required autocomplete="email">
         </div>
-        
-        <section class="card-panel">
-          <h2 class="panel-title">📉 High-Frequency AI Trend Index</h2>
-          <div class="chart-box-wrapper">
-            <div id="marketAnalyticsChart"></div>
-          </div>
-        </section>
-
-        <section class="card-panel">
-          <h2 class="panel-title">💬 Live System Discussion</h2>
-          
-          <form id="opinion-form" class="comment-composer">
-            <input type="text" id="user-opinion-text" class="comment-input" placeholder="Share your analysis on current trend vectors..." required>
-            <button type="submit" class="comment-submit">Post Insight</button>
-          </form>
-
-          <div class="comments-thread" id="opinions-timeline-container">
-            </div>
-        </section>
-
-      </div>
-
-      <aside class="card-panel">
-        <h2 class="panel-title">📰 Dynamic Signals & News</h2>
-        <div class="news-stream-list">
-          <div class="news-item">
-            <div class="news-meta"><span>System Signal</span><span>14 mins ago</span></div>
-            <div class="news-title">Global computational network volumes increase by 14.2% over standard moving baseline averages.</div>
-          </div>
-          <div class="news-item">
-            <div class="news-meta"><span>Market Updates</span><span>2 hours ago</span></div>
-            <div class="news-title">Automated financial execution protocols hit record-high capital efficiency milestones across decentralized networks.</div>
-          </div>
-          <div class="news-item">
-            <div class="news-meta"><span>Ecosystem Tracking</span><span>5 hours ago</span></div>
-            <div class="news-title">Privacy protocols verify zero-leakage scraping loops completed across target telemetry networks.</div>
-          </div>
+        <div class="input-group">
+          <label for="password">Enter Your Password</label>
+          <input type="password" id="password" placeholder="••••••••" required>
         </div>
-      </aside>
-    </main>
+        <button type="submit" class="btn-primary">SUBMIT</button>
+        <div id="auth-error" class="error-msg"></div>
+      </form>
+    </div>
   </div>
+
+  <main class="dashboard-layout">
+    <div class="main-stream">
+      <section class="card-panel">
+        <h2 class="panel-title">📉 High-Frequency AI Trend Index</h2>
+        <div class="chart-box-wrapper">
+          <div id="marketAnalyticsChart"></div>
+        </div>
+      </section>
+
+      <section class="card-panel">
+        <h2 class="panel-title">💬 Live System Discussion</h2>
+        <form id="opinion-form" class="comment-composer">
+          <input type="text" id="user-opinion-text" class="comment-input" placeholder="Share your analysis on current trend vectors..." required>
+          <button type="submit" class="comment-submit">Post</button>
+        </form>
+        <div class="comments-thread" id="opinions-timeline-container">
+          </div>
+      </section>
+    </div>
+
+    <aside class="card-panel">
+      <h2 class="panel-title">📰 Dynamic Signals & News</h2>
+      <div class="news-stream-list">
+        <div class="news-item">
+          <div class="news-meta"><span>System Signal</span><span>14 mins ago</span></div>
+          <div class="news-title">Global computational network volumes increase by 14.2% over standard moving baseline averages.</div>
+        </div>
+        <div class="news-item">
+          <div class="news-meta"><span>Market Updates</span><span>2 hours ago</span></div>
+          <div class="news-title">Automated financial execution protocols hit record-high capital efficiency milestones across decentralized ledger networks.</div>
+        </div>
+        <div class="news-item">
+          <div class="news-meta"><span>Ecosystem Tracking</span><span>5 hours ago</span></div>
+          <div class="news-title">Privacy protocols verify zero-leakage scraping loops completed across target telemetry networks.</div>
+        </div>
+      </div>
+    </aside>
+  </main>
 
   <script src="script.js"></script>
 </body>

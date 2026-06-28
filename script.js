@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     const SUPABASE_URL = "https://bdthpyarytpqeohxjtwl.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_xxyOIvtN9Gpj0ZjxC2wLHw_9yWhvXdx";          
-    
+
     // Global Constants (Make sure these are defined at the very top of your file!)
     // const SUPABASE_URL = "your_supabase_url";
     // const SUPABASE_KEY = "your_supabase_anon_key";

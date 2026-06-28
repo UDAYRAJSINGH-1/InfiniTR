@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const statsFeedbackCount = document.getElementById('stats-feedback-count');
 
     const CREDENTIALS_REGISTRY = {
-        'admin@infinitr.io': { password: 'yoursecureadminpassword', role: 'Administrator Tier', name: 'admin@infinitr.io' },
-        'member@infinitr.io': { password: 'userpassword', role: 'Premium Tier User', name: 'member@infinitr.io' },
-        'auditor@infinitr.io': { password: 'userpassword', role: 'Standard Tier User', name: 'auditor@infinitr.io' }
+        'admin@infinitr.io': { password: 'Rathod', role: 'Administrator Tier', name: 'admin@infinitr.io' },
+        'member@infinitr.io': { password: 'Uday3333', role: 'Premium Tier User', name: 'member@infinitr.io' },
+        'auditor@infinitr.io': { password: 'Uday3333', role: 'Standard Tier User', name: 'auditor@infinitr.io' }
     };
     // 1. SESSION MANAGEMENT LIFECYCLE
     function checkAuthState() {

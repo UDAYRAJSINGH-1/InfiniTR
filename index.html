@@ -35,25 +35,25 @@
     </div>
   </nav>
 
-  <div id="auth-screen" class="auth-container" style="display: none;">
-    <div class="auth-card">
-      <div class="auth-close" id="auth-close-btn">&times;</div>
-      <h2>INFINI<span>TR</span></h2>
-      <p>Enter your profile credentials to sync with the tracking matrix stream.</p>
-      <form id="login-form">
-        <div class="input-group">
-          <label for="username">Secure User Email</label>
-          <input type="text" id="username" placeholder="member@infinitr.io" required autocomplete="email">
-        </div>
-        <div class="input-group">
-          <label for="password">Security Access Key</label>
-          <input type="password" id="password" placeholder="••••••••" required>
-        </div>
-        <button type="submit" class="btn-primary">Initialize Secure Link</button>
-        <div id="auth-error" class="error-msg"></div>
-      </form>
-    </div>
+ <div id="auth-screen" class="auth-container" style="display: none;">
+  <div class="auth-card">
+    <div class="auth-close" id="auth-close-btn">&times;</div>
+    <h2>INFINI<span>TR</span></h2>
+    <p>Enter your profile credentials to sync with the tracking matrix stream.</p>
+    <form id="login-form">
+      <div class="input-group">
+        <label for="username">Enter Your Email</label>
+        <input type="text" id="username" placeholder="member@infinitr.io" required autocomplete="email">
+      </div>
+      <div class="input-group">
+        <label for="password">Enter Your Password</label>
+        <input type="password" id="password" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-primary">SUBMIT</button>
+      <div id="auth-error" class="error-msg"></div>
+    </form>
   </div>
+</div>
 
   <div id="app-screen">
     <main class="dashboard-layout">

@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 checkAuthState();
             } else {
                 if (authError) {
-                    authError.textContent = "Access Denied. Check profile account mapping.";
+                    authError.textContent = "Check Your Details";
                     authError.style.display = 'block';
                 }
             }

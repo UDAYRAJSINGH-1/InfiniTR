@@ -3,319 +3,119 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>InfiniTR // Predictive AI Market Engine</title>
+  <title>InfiniTR // Advanced Predictive Workspace</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
   
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
-  <style>
-    /* ==========================================================================
-       1. COLOR TOKENS & RESET (Eloqwnt-Inspired Tech Dark Mode)
-       ========================================================================== */
-    :root {
-      --bg-base: #060913;
-      --bg-card: #0D1321;
-      --accent-neon: #10B981; /* High contrast cyber green */
-      --accent-blue: #06B6D4;
-      --border-line: #1E293B;
-      --text-pure: #FFFFFF;
-      --text-muted: #64748B;
-      --font-body: 'Plus Jakarta Sans', sans-serif;
-      --font-display: 'Space Grotesk', sans-serif;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background-color: var(--bg-base); color: var(--text-pure); font-family: var(--font-body); }
-
-    /* ==========================================================================
-       2. HEADER NAVIGATION & AUTHENTICATION ZONE
-       ========================================================================== */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1.25rem 3rem;
-      border-bottom: 1px solid var(--border-line);
-      background-color: rgba(6, 9, 19, 0.85);
-      backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0; z-index: 100;
-    }
-
-    .logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
-    .logo span { color: var(--accent-neon); }
-
-    .search-container {
-      position: relative;
-      width: 400px;
-    }
-
-    .search-input {
-      width: 100%;
-      background-color: #121A2E;
-      border: 1px solid var(--border-line);
-      padding: 0.6rem 1rem;
-      border-radius: 8px;
-      color: var(--text-pure);
-      font-family: var(--font-body);
-      font-size: 0.85rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .search-input:focus { border-color: var(--accent-neon); }
-
-    .profile-pill {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      background-color: #121A2E;
-      padding: 0.4rem 1rem;
-      border-radius: 100px;
-      border: 1px solid var(--border-line);
-    }
-
-    .user-email { font-size: 0.85rem; font-weight: 600; color: var(--accent-blue); }
-    
-    .auth-btn {
-      background: none; border: none; color: var(--text-pure);
-      font-size: 0.85rem; cursor: pointer; font-weight: 700;
-    }
-
-    /* ==========================================================================
-       3. SYSTEM CORE GRID LAYOUT
-       ========================================================================== */
-    .dashboard-layout {
-      max-width: 1400px;
-      margin: 2rem auto;
-      padding: 0 3rem;
-      display: grid;
-      grid-template-columns: 2fr 1fr; /* 2 Columns: Main content vs Sidebar feed */
-      gap: 2rem;
-    }
-
-    .main-stream { display: flex; flex-direction: column; gap: 2rem; }
-    .card-panel { background-color: var(--bg-card); border: 1px solid var(--border-line); border-radius: 12px; padding: 2rem; }
-    
-    .panel-title { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 1rem; }
-
-    /* Visual Blur Layer */
-    .chart-box-wrapper { position: relative; width: 100%; height: 320px; }
-    
-    .paywall-blur-shield {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(13, 19, 33, 0.4); backdrop-filter: blur(16px);
-      display: flex; justify-content: center; align-items: center; border-radius: 8px; z-index: 10;
-    }
-
-    .paywall-notice { text-align: center; padding: 2rem; max-width: 360px; }
-    .paywall-notice h4 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.5rem; }
-    .paywall-notice p { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1.25rem; }
-    
-    .upgrade-btn {
-      background-color: var(--accent-neon); color: var(--bg-base);
-      border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 700; cursor: pointer;
-    }
-
-    /* ==========================================================================
-       4. AGGREGATED NEWS FEED (Right Sidebar)
-       ========================================================================== */
-    .news-stream-list { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1rem; }
-    .news-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
-    .news-item:last-child { border-bottom: none; }
-    .news-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem; }
-    .news-title { font-size: 0.9rem; font-weight: 600; line-height: 1.4; }
-
-    /* ==========================================================================
-       5. COMMENTS INFRASTRUCTURE
-       ========================================================================== */
-    .comment-composer { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
-    .comment-input {
-      flex: 1; background-color: #060913; border: 1px solid var(--border-line);
-      border-radius: 8px; padding: 0.75rem; color: var(--text-pure); font-family: var(--font-body); outline: none;
-    }
-    .comment-submit { background-color: var(--text-pure); color: var(--bg-base); border: none; padding: 0 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
-    
-    .comments-thread { display: flex; flex-direction: column; gap: 1.25rem; }
-    .comment-node { background-color: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); }
-    .comment-author { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--accent-blue); }
-    .comment-body { font-size: 0.85rem; color: #E2E8F0; }
-  </style>
 </head>
 <body>
 
   <nav class="navbar">
     <div class="logo">INFINI<span>TR</span></div>
     
-    <div class="search-container">
-      <input type="text" class="search-input" placeholder="Search global intelligence indexes & market news...">
+    <div class="nav-links-group">
+      <a href="index.html" class="nav-page-link active">Dashboard</a>
+      <a href="features.html" class="nav-page-link">Features</a>
+      <a href="trends.html" class="nav-page-link">Trends</a>
+      <a href="resources.html" class="nav-page-link">Resources</a>
+      <a href="contact.html" class="nav-page-link">Contact</a>
     </div>
 
     <div class="profile-pill">
-      <span id="userEmailDisplay" class="user-email">guest_account@infinitr.io</span>
-      <button id="authTriggerBtn" class="auth-btn" onclick="toggleSimulatedSession()">Log Out</button>
+      <div class="user-meta-block">
+        <span id="user-display-name" class="user-email">guest_account@infinitr.io</span>
+        <small id="user-role-sub" style="color: var(--text-muted); display: block; font-size: 0.7rem;"></small>
+      </div>
+      <span id="portal-role-badge" style="font-size: 0.7rem; font-weight: bold; padding: 0.2rem 0.4rem; background: rgba(255,255,255,0.05); border-radius: 4px; display: none;"></span>
+      <button id="logout-btn" class="auth-btn" style="display: none;">Log Out</button>
+      <button id="login-trigger-btn" class="login-btn">Log In</button>
     </div>
   </nav>
 
-  <main class="dashboard-layout">
-    
-    <div class="main-stream">
-      
-      <section class="card-panel">
-        <h2 class="panel-title">📉 High-Frequency AI Trend Index</h2>
-        <div class="chart-box-wrapper">
-          <div id="marketAnalyticsChart"></div>
-          
-          <div id="chartPaywallShield" class="paywall-blur-shield" style="display: none;">
-            <div class="paywall-notice">
-              <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">🔒</div>
-              <h4>Premium Predictive Overlay Locked</h4>
-              <p>Your current profile tier does not have clearance to view predictive macro indicators.</p>
-              <button class="upgrade-btn" onclick="upgradeSimulatedProfile()">Upgrade Account Tier</button>
+  <div id="auth-screen" class="auth-container" style="display: none;">
+    <div class="auth-card">
+      <div class="auth-close" id="auth-close-btn">&times;</div>
+      <h2>INFINI<span>TR</span></h2>
+      <p>Enter your profile credentials to sync with the tracking matrix stream.</p>
+      <form id="login-form">
+        <div class="input-group">
+          <label for="username">Secure User Email</label>
+          <input type="text" id="username" placeholder="member@infinitr.io" required autocomplete="email">
+        </div>
+        <div class="input-group">
+          <label for="password">Security Access Key</label>
+          <input type="password" id="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn-primary">Initialize Secure Link</button>
+        <div id="auth-error" class="error-msg"></div>
+      </form>
+    </div>
+  </div>
+
+  <div id="app-screen">
+    <main class="dashboard-layout">
+      <div class="main-stream">
+        
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Total Stream Inquiries</span>
+              <div id="stats-queries-count" class="stat-value icon-blue">0</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-info">
+              <span style="color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 700;">Community Shared Insights</span>
+              <div id="stats-feedback-count" class="stat-value icon-green">0</div>
             </div>
           </div>
         </div>
-      </section>
-
-      <section class="card-panel">
-        <h2 class="panel-title">💬 Live System Discussion</h2>
         
-        <div class="comment-composer">
-          <input type="text" id="newCommentInput" class="comment-input" placeholder="Share your analysis on current trend vectors...">
-          <button class="comment-submit" onclick="postCustomComment()">Post</button>
-        </div>
-
-        <div class="comments-thread" id="commentsBox">
-          <div class="comment-node">
-            <div class="comment-author">alpha_trader_99@gmail.com</div>
-            <div class="comment-body">The standard volume indexes are shifting fast. Looks like a solid accumulation pattern over the last 48 hours.</div>
+        <section class="card-panel">
+          <h2 class="panel-title">📉 High-Frequency AI Trend Index</h2>
+          <div class="chart-box-wrapper">
+            <div id="marketAnalyticsChart"></div>
           </div>
-          <div class="comment-node">
-            <div class="comment-author">institutional_block@proton.me</div>
-            <div class="comment-body">Agreed. The predictive trend layers look highly volatile today. Waiting for verification on the next close.</div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-    </div>
+        <section class="card-panel">
+          <h2 class="panel-title">💬 Live System Discussion</h2>
+          
+          <form id="opinion-form" class="comment-composer">
+            <input type="text" id="user-opinion-text" class="comment-input" placeholder="Share your analysis on current trend vectors..." required>
+            <button type="submit" class="comment-submit">Post Insight</button>
+          </form>
 
-    <aside class="card-panel">
-      <h2 class="panel-title">📰 Dynamic Signals & News</h2>
-      <div class="news-stream-list">
-        
-        <div class="news-item">
-          <div class="news-meta"><span>System Signal</span><span>14 mins ago</span></div>
-          <div class="news-title">Global computational network volumes increase by 14.2% over standard moving baseline averages.</div>
-        </div>
-
-        <div class="news-item">
-          <div class="news-meta"><span>Market Updates</span><span>2 hours ago</span></div>
-          <div class="news-title">Automated financial execution protocols hit record-high capital efficiency milestones across decentralized ledger networks.</div>
-        </div>
-
-        <div class="news-item">
-          <div class="news-meta"><span>Ecosystem Tracking</span><span>5 hours ago</span></div>
-          <div class="news-title">Privacy protocols verify zero-leakage scraping loops completed across target telemetry networks.</div>
-        </div>
+          <div class="comments-thread" id="opinions-timeline-container">
+            </div>
+        </section>
 
       </div>
-    </aside>
 
-  </main>
+      <aside class="card-panel">
+        <h2 class="panel-title">📰 Dynamic Signals & News</h2>
+        <div class="news-stream-list">
+          <div class="news-item">
+            <div class="news-meta"><span>System Signal</span><span>14 mins ago</span></div>
+            <div class="news-title">Global computational network volumes increase by 14.2% over standard moving baseline averages.</div>
+          </div>
+          <div class="news-item">
+            <div class="news-meta"><span>Market Updates</span><span>2 hours ago</span></div>
+            <div class="news-title">Automated financial execution protocols hit record-high capital efficiency milestones across decentralized networks.</div>
+          </div>
+          <div class="news-item">
+            <div class="news-meta"><span>Ecosystem Tracking</span><span>5 hours ago</span></div>
+            <div class="news-title">Privacy protocols verify zero-leakage scraping loops completed across target telemetry networks.</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
 
-  <script>
-    let isUserLoggedIn = true;
-    let isProfilePremium = false;
-    let mainApexChartInstance = null;
-
-    document.addEventListener("DOMContentLoaded", () => {
-      buildGlobalAnonymizedChart();
-    });
-
-    // Renders smooth anonymized data graphs with zero developer terms visible
-    function buildGlobalAnonymizedChart() {
-      const options = {
-        series: [
-          { name: 'System Volume Delta', data: [34, 44, 54, 21, 67, 88, 95] },
-          { name: 'Predictive Moving Mean', data: [15, 25, 47, 32, 54, 44, 61] }
-        ],
-        chart: { type: 'area', height: 300, toolbar: { show: false }, background: 'transparent' },
-        colors: ['#10B981', '#06B6D4'],
-        dataLabels: { enabled: false },
-        stroke: { curve: 'smooth', width: 2 },
-        theme: { mode: 'dark' },
-        grid: { borderColor: '#1E293B' },
-        xaxis: {
-          categories: ['04:00', '08:00', '12:00', '16:00', '20:00', '00:00', '04:00'],
-          labels: { style: { colors: '#64748B' } }
-        },
-        yaxis: { labels: { style: { colors: '#64748B' } } },
-        legend: { labels: { colors: '#FFFFFF' }, position: 'top' }
-      };
-
-      mainApexChartInstance = new ApexCharts(document.querySelector("#marketAnalyticsChart"), options);
-      mainApexChartInstance.render();
-    }
-
-    // Handles simulation toggles for verification
-    function toggleSimulatedSession() {
-      const emailField = document.getElementById('userEmailDisplay');
-      const authBtn = document.getElementById('authTriggerBtn');
-      const shield = document.getElementById('chartPaywallShield');
-      const chartElement = document.getElementById('marketAnalyticsChart');
-
-      isUserLoggedIn = !isUserLoggedIn;
-
-      if (isUserLoggedIn) {
-        emailField.innerText = "guest_account@infinitr.io";
-        authBtn.innerText = "Log Out";
-        shield.style.display = "none";
-        chartElement.style.filter = "none";
-      } else {
-        emailField.innerText = "❌ Session Terminated";
-        authBtn.innerText = "Log In via Google";
-        shield.style.display = "flex"; // Locks everything instantly on logout
-        chartElement.style.filter = "blur(16px)";
-      }
-    }
-
-    function upgradeSimulatedProfile() {
-      const emailField = document.getElementById('userEmailDisplay');
-      const shield = document.getElementById('chartPaywallShield');
-      const chartElement = document.getElementById('marketAnalyticsChart');
-      
-      isProfilePremium = true;
-      emailField.innerText = "premium_user@infinitr.io ⭐";
-      shield.style.display = "none";
-      chartElement.style.filter = "none";
-      alert("Profile status validated. Premium database flag simulated.");
-    }
-
-    // Simple append structure for testing comments interaction
-    function postCustomComment() {
-      const input = document.getElementById('newCommentInput');
-      const thread = document.getElementById('commentsBox');
-      const currentEmail = document.getElementById('userEmailDisplay').innerText;
-
-      if (!isUserLoggedIn) {
-        alert("Authentication required to communicate with active discussion nodes.");
-        return;
-      }
-      if (input.value.trim() === "") return;
-
-      const newComment = document.createElement('div');
-      newComment.className = 'comment-node';
-      newComment.innerHTML = `
-        <div class="comment-author">${currentEmail}</div>
-        <div class="comment-body">${input.value}</div>
-      `;
-
-      thread.insertBefore(newComment, thread.firstChild);
-      input.value = "";
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>

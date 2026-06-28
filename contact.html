@@ -40,14 +40,14 @@
       <p>Enter your profile credentials to sync with the tracking matrix stream.</p>
       <form id="login-form">
         <div class="input-group">
-          <label for="username">Secure User Email</label>
+          <label for="username">Enter Your Email</label>
           <input type="text" id="username" placeholder="member@infinitr.io" required autocomplete="email">
         </div>
         <div class="input-group">
-          <label for="password">Security Access Key</label>
+          <label for="password">Enter Your Password</label>
           <input type="password" id="password" placeholder="••••••••" required>
         </div>
-        <button type="submit" class="btn-primary">Initialize Secure Link</button>
+        <button type="submit" class="btn-primary">SUBMIT</button>
         <div id="auth-error" class="error-msg"></div>
       </form>
     </div>
@@ -58,29 +58,29 @@
       <h2 class="panel-title" style="font-size: 1.75rem; font-family: var(--font-display); text-align: center; margin-bottom: 0.5rem;">Connect with <span>Telemetry Control</span></h2>
       <p style="color: var(--text-muted); text-align: center; font-size: 0.9rem; margin-bottom: 2.5rem; line-height: 1.5;">Submit an secure communications request packet to our technical operations team.</p>
       
-      <form id="contact-dispatch-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
+      <form id="contact-form" style="display: flex; flex-direction: column; gap: 1.5rem;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
           <div class="input-group" style="margin-bottom: 0;">
-            <label>Identification Name</label>
-            <input type="text" placeholder="Operator Name" required style="background: #060913;">
+            <label for="contact-name">Identification Name</label>
+            <input type="text" id="contact-name" placeholder="Operator Name" required style="background: #060913;">
           </div>
           <div class="input-group" style="margin-bottom: 0;">
-            <label>Return Routing Email</label>
-            <input type="email" placeholder="name@domain.com" required style="background: #060913;">
+            <label for="contact-email">Return Routing Email</label>
+            <input type="email" id="contact-email" placeholder="name@domain.com" required style="background: #060913;">
           </div>
         </div>
         
         <div class="input-group" style="margin-bottom: 0;">
-          <label>Transmission Classification Subject</label>
-          <input type="text" placeholder="General telemetry inquiry, tier upgrade link request..." required style="background: #060913;">
+          <label for="contact-subject">Transmission Classification Subject</label>
+          <input type="text" id="contact-subject" placeholder="General telemetry inquiry, tier upgrade link request..." required style="background: #060913;">
         </div>
 
         <div class="input-group" style="margin-bottom: 0;">
-          <label>Secure Message Payload</label>
-          <textarea rows="6" placeholder="Provide complete request details..." required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border-line); background: #060913; color: white; outline: none; font-family: var(--font-body); font-size: 0.9rem; resize: none;"></textarea>
+          <label for="contact-message">Secure Message Payload</label>
+          <textarea id="contact-message" rows="6" placeholder="Provide complete request details..." required style="width: 100%; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--border-line); background: #060913; color: white; outline: none; font-family: var(--font-body); font-size: 0.9rem; resize: none;"></textarea>
         </div>
 
-        <button type="submit" class="btn-primary" style="padding: 1rem; margin-top: 1rem;">Dispatch Signal Transmission</button>
+        <button type="submit" class="btn-primary" style="padding: 1rem; margin-top: 1rem;">SUBMIT</button>
       </form>
     </section>
   </div>

@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // ⚙️ CLOUD DATABASE CONFIGURATION
     // ==========================================
-    // PLACE YOUR ACTUAL SUPABASE KEYS HERE
     const SUPABASE_URL = "https://bdthpyarytpqeohxjtwl.supabase.co"; 
     const SUPABASE_KEY = "sb_publishable_xxyOIvtN9Gpj0ZjxC2wLHw_9yWhvXdx";          
 
@@ -19,33 +18,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('.app-section');
     
     const portalRoleBadge = document.getElementById('portal-role-badge');
-    const adminOnlyPanel = document.getElementById('admin-only-panel');
     const opinionForm = document.getElementById('opinion-form');
     
     const statsQueriesCount = document.getElementById('stats-queries-count');
     const statsFeedbackCount = document.getElementById('stats-feedback-count');
 
-    // Hardcoded Verification Credentials Matrix
+    // Sanitized Consumer Access Matrix (Hiding Admin/Developer Mechanics)
     const CREDENTIALS_REGISTRY = {
-        'admin': { password: 'adminpassword', role: 'Admin', name: 'Udayraj Singh' },
-        'user1': { password: 'userpassword', role: 'User', name: 'Standard Auditor' }
+        'member@infinitr.io': { password: 'userpassword', role: 'Premium Tier', name: 'member@infinitr.io' },
+        'auditor@infinitr.io': { password: 'userpassword', role: 'Standard Tier', name: 'auditor@infinitr.io' }
     };
 
-    // Internet Search Cloud Simulation Data Matrix Dictionary
+    // Anonymized Metric Search Database (No tool names exposed)
     const INTERNET_SEARCH_MOCK_DATABASE = [
-        { title: "AI Ecosystem Growth Trends 2026", snippet: "Recent documentation analytics indicate a massive migration towards localized web application pipelines and subfolder static hosts.", category: "AI" },
-        { title: "GitHub Static Pages Security Protocols", snippet: "Single page architectures deploying strict CSS parameters prevent client-side authorization leakage on public networks.", category: "system" },
-        { title: "Open Source Language Models", snippet: "Free model clusters offer text automation and translation libraries without relying on expensive remote APIs.", category: "news" },
-        { title: "System Dashboard Integration Guide", snippet: "How to bind localStorage states to capture user interaction lists dynamically without dedicated database instances.", category: "system" }
+        { title: "AI Ecosystem Growth Trends", snippet: "Recent analytics indicate a massive migration towards localized web application pipelines and predictive matrix streams.", category: "AI Analytics" },
+        { title: "Market Index Performance Layers", snippet: "Single page architectures deploying automated metrics show record-high calculation speed on public networks.", category: "System Velocity" },
+        { title: "Open Source Trend Vector Analysis", snippet: "Free predictive data models offer pattern recognition automation libraries without public API footprint disclosure.", category: "News Signals" },
+        { title: "System Dashboard Metric Clusters", snippet: "How backend intelligence models capture user metrics and predictive vectors natively.", category: "System Velocity" }
     ];
 
-    // 1. DATA INFRASTRUCTURE ARCHITECTURE LOGIC (HYBRID CLOUD FRAMEWORK)
+    // 1. DATA INFRASTRUCTURE ARCHITECTURE LOGIC
     function initializeDatabaseState() {
         if (!localStorage.getItem('database_query_clicks')) {
             localStorage.setItem('database_query_clicks', '1420');
         }
         renderLedgerMetrics();
-        fetchLiveOpinionsTimeline(); // Automatically load live timeline stream on boot
+        fetchLiveOpinionsTimeline(); // Load clean news/comments stream on boot
     }
 
     async function renderLedgerMetrics() {
@@ -65,11 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (statsFeedbackCount) statsFeedbackCount.textContent = data.length;
             }
         } catch (err) {
-            console.error("Failed to fetch cloud counter snapshot:", err);
+            console.error("Failed to fetch metric counters:", err);
         }
     }
 
-    // 🔄 NEW: FETCH & RENDER LIVE TIMELINE DATA FROM SUPABASE
+    // 🔄 FETCH & RENDER COMMUNITY COMMENTS TIMELINE
     async function fetchLiveOpinionsTimeline() {
         const timelineContainer = document.getElementById('opinions-timeline-container');
         if (!timelineContainer) return;
@@ -86,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 const data = await response.json();
                 if (data.length === 0) {
-                    timelineContainer.innerHTML = `<p style="color: var(--text-secondary); font-style: italic; padding: 1rem;">No data records found inside live cloud tables.</p>`;
+                    timelineContainer.innerHTML = `<p style="color: var(--text-secondary); font-style: italic; padding: 1rem;">No discussion vectors found inside platform tables.</p>`;
                     return;
                 }
 
@@ -95,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return `
                         <div style="background: rgba(255,255,255,0.03); padding: 1rem; border-radius: 6px; margin-bottom: 0.75rem; border-left: 3px solid var(--accent); transition: 0.2s;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                                <strong style="color: white; font-size: 0.95rem;">${item.display_name} <span style="font-weight: normal; color: var(--text-secondary); font-size: 0.8rem;">(@${item.username})</span></strong>
+                                <strong style="color: white; font-size: 0.95rem;">${item.display_name}</strong>
                                 <small style="color: var(--text-secondary); font-size: 0.75rem;">${formattedDate}</small>
                             </div>
                             <p style="color: #e2e8f0; font-size: 0.9rem; line-height: 1.4; margin: 0;">${item.content}</p>
@@ -104,12 +102,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }).join('');
             }
         } catch (err) {
-            console.error("Failed syncing cloud live datastream feed:", err);
-            timelineContainer.innerHTML = `<p style="color: #ef4444; font-size: 0.85rem; padding: 1rem;">Network interface link offline.</p>`;
+            console.error("Failed syncing live feed:", err);
+            timelineContainer.innerHTML = `<p style="color: #ef4444; font-size: 0.85rem; padding: 1rem;">System data link offline.</p>`;
         }
     }
 
-    // 2. PRIVILEGE VERIFICATION ENGINE
+    // 2. PRIVILEGE VERIFICATION ENGINE (Profile Limits)
     function checkAuthState() {
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         const savedRole = localStorage.getItem('userRole');
@@ -118,35 +116,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isLoggedIn === 'true') {
             if (authScreen) authScreen.style.setProperty('display', 'none', 'important');
             if (appScreen) appScreen.style.display = 'flex';
-            if (userDisplayName) userDisplayName.textContent = savedName;
-            if (userRoleSub) userRoleSub.textContent = savedRole + " Security Clearance";
+            if (userDisplayName) userDisplayName.textContent = savedName; // ONLY showing profile email
+            if (userRoleSub) userRoleSub.textContent = savedRole;
             
-            const adminButtons = document.querySelectorAll('.admin-action-btn');
-
-            if (savedRole === 'Admin') {
-                if (portalRoleBadge) {
-                    portalRoleBadge.textContent = 'Root Admin Mode';
-                    portalRoleBadge.style.color = '#ef4444';
-                }
-                if (adminOnlyPanel) adminOnlyPanel.style.setProperty('display', 'block', 'important');
-                
-                adminButtons.forEach(btn => {
-                    btn.style.setProperty('display', 'inline-block', 'important');
-                });
-            } else {
-                if (portalRoleBadge) {
-                    portalRoleBadge.textContent = 'User Space (Read-Only Terminal)';
-                    portalRoleBadge.style.color = '#3b82f6';
-                }
-                if (adminOnlyPanel) adminOnlyPanel.style.setProperty('display', 'none', 'important');
-                
-                adminButtons.forEach(btn => {
-                    btn.style.setProperty('display', 'none', 'important');
-                });
+            if (portalRoleBadge) {
+                portalRoleBadge.textContent = `${savedRole} Verified`;
+                portalRoleBadge.style.color = '#10B981';
             }
 
             renderLedgerMetrics();
-            fetchLiveOpinionsTimeline(); // Sync fresh records upon view entrance
+            fetchLiveOpinionsTimeline(); 
             handleRouting(); 
         } else {
             if (authScreen) authScreen.style.setProperty('display', 'flex', 'important');
@@ -179,14 +158,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 window.location.hash = '#dashboard'; 
             } else {
                 if (authError) {
-                    authError.textContent = "Access Denied. Check credentials registry mapping.";
+                    authError.textContent = "Access Denied. Check account parameters.";
                     authError.style.display = 'block';
                 }
             }
         });
     }
 
-    // 🌐 USER FEEDBACK CLOUD ENGINE SUBMISSION
+    // 🌐 USER FEEDBACK COMMENT SUBMISSION
     if (opinionForm) {
         opinionForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -196,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const payload = {
                 username: localStorage.getItem('userRawUsername') || 'anonymous',
-                display_name: localStorage.getItem('userDisplayName') || 'Anonymous',
+                display_name: localStorage.getItem('userDisplayName') || 'Anonymous User',
                 content: newOpinion
             };
 
@@ -215,49 +194,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response.ok) {
                     textarea.value = '';
                     renderLedgerMetrics();
-                    fetchLiveOpinionsTimeline(); // Re-render feed items dynamically without alerts
+                    fetchLiveOpinionsTimeline(); 
                 } else {
-                    alert("Cloud rejected request. Verify your database connection keys.");
+                    alert("System rejected comment vector. Verify profile session status.");
                 }
             } catch (err) {
-                console.error("Network interface error:", err);
+                console.error("Network link error:", err);
             }
         });
     }
 
-    // ADMINISTRATIVE TOOL CHAIN ASSIGNMENTS
-    const adminFlushBtn = document.getElementById('admin-flush-btn');
-    if (adminFlushBtn) {
-        adminFlushBtn.addEventListener('click', async () => {
-            if (confirm("Are you sure you want to drop all cloud database feedback records?")) {
-                try {
-                    const response = await fetch(`${SUPABASE_URL}/rest/v1/user_opinions?id=neq.0`, {
-                        method: 'DELETE',
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': `Bearer ${SUPABASE_KEY}`
-                        }
-                    });
-                    if (response.ok) {
-                        localStorage.setItem('database_query_clicks', '1420');
-                        renderLedgerMetrics();
-                        fetchLiveOpinionsTimeline();
-                    }
-                } catch (err) {
-                    console.error("Administrative purge execution dropped:", err);
-                }
-            }
-        });
-    }
-
-    const adminLogBtn = document.getElementById('admin-log-btn');
-    if (adminLogBtn) {
-        adminLogBtn.addEventListener('click', () => {
-            fetchLiveOpinionsTimeline();
-        });
-    }
-
-    // 3. GLOBAL MATRIX SEARCH SYSTEM & WEB CRAWLER SIMULATOR
+    // 3. CLEAN USER SEARCH ENGINE (Zero Tool Leakage)
     const globalSearchBar = document.getElementById('global-search-bar');
     const webSearchBox = document.getElementById('web-search-results-box');
     const searchResultsContainer = document.getElementById('search-results-output-container');
@@ -265,25 +212,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (globalSearchBar) {
         globalSearchBar.addEventListener('input', (e) => {
             const term = e.target.value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.tool-card');
             
             if (term === "") {
                 if (webSearchBox) webSearchBox.style.display = "none";
-                cards.forEach(card => card.style.display = "block");
                 return;
             }
-
-            cards.forEach(card => {
-                const searchTags = card.getAttribute('data-tags') || '';
-                const cardTitle = card.querySelector('h4').textContent.toLowerCase();
-                const cardText = card.querySelector('p').textContent.toLowerCase();
-
-                if (searchTags.includes(term) || cardTitle.includes(term) || cardText.includes(term)) {
-                    card.style.display = "block";
-                } else {
-                    card.style.display = "none";
-                }
-            });
 
             const filteredWebResults = INTERNET_SEARCH_MOCK_DATABASE.filter(item => 
                 item.title.toLowerCase().includes(term) || 
@@ -295,9 +228,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (webSearchBox) webSearchBox.style.display = "block";
                 if (searchResultsContainer) {
                     searchResultsContainer.innerHTML = filteredWebResults.map(res => `
-                        <div style="background: var(--bg-main); padding: 0.75rem; border-radius: 4px; border-left: 3px solid var(--accent);">
-                            <h5 style="color:white; margin-bottom:0.25rem;"><i class="fa-solid fa-link" style="font-size:0.8rem; color:var(--text-secondary);"></i> ${res.title}</h5>
+                        <div style="background: var(--bg-main); padding: 0.75rem; border-radius: 4px; border-left: 3px solid var(--accent); margin-bottom: 0.5rem;">
+                            <h5 style="color:white; margin-bottom:0.25rem;"><i class="fa-solid fa-chart-line" style="font-size:0.8rem; color:var(--text-secondary); margin-right: 5px;"></i> ${res.title}</h5>
                             <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.4;">${res.snippet}</p>
+                            <span style="font-size: 0.7rem; color: var(--accent); text-transform: uppercase; font-weight: bold;">${res.category}</span>
                         </div>
                     `).join('');
                 }
@@ -306,15 +240,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    document.querySelectorAll('.admin-action-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            let currentClicks = parseInt(localStorage.getItem('database_query_clicks') || '1420');
-            currentClicks++;
-            localStorage.setItem('database_query_clicks', currentClicks.toString());
-            renderLedgerMetrics();
-        });
-    });
 
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
@@ -326,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. CLIENT SIDE COMPONENT ROUTER ENVIRONMENT
+    // 4. CLIENT SIDE NAVIGATION ROUTER
     function handleRouting() {
         if (localStorage.getItem('isLoggedIn') !== 'true') return;
 

@@ -1,203 +1,321 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InfiniTR - Advanced Portal Terminal</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InfiniTR // Predictive AI Market Engine</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+  <style>
+    /* ==========================================================================
+       1. COLOR TOKENS & RESET (Eloqwnt-Inspired Tech Dark Mode)
+       ========================================================================== */
+    :root {
+      --bg-base: #060913;
+      --bg-card: #0D1321;
+      --accent-neon: #10B981; /* High contrast cyber green */
+      --accent-blue: #06B6D4;
+      --border-line: #1E293B;
+      --text-pure: #FFFFFF;
+      --text-muted: #64748B;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: var(--bg-base); color: var(--text-pure); font-family: var(--font-body); }
+
+    /* ==========================================================================
+       2. HEADER NAVIGATION & AUTHENTICATION ZONE
+       ========================================================================== */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 3rem;
+      border-bottom: 1px solid var(--border-line);
+      background-color: rgba(6, 9, 19, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0; z-index: 100;
+    }
+
+    .logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
+    .logo span { color: var(--accent-neon); }
+
+    .search-container {
+      position: relative;
+      width: 400px;
+    }
+
+    .search-input {
+      width: 100%;
+      background-color: #121A2E;
+      border: 1px solid var(--border-line);
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      color: var(--text-pure);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus { border-color: var(--accent-neon); }
+
+    .profile-pill {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background-color: #121A2E;
+      padding: 0.4rem 1rem;
+      border-radius: 100px;
+      border: 1px solid var(--border-line);
+    }
+
+    .user-email { font-size: 0.85rem; font-weight: 600; color: var(--accent-blue); }
+    
+    .auth-btn {
+      background: none; border: none; color: var(--text-pure);
+      font-size: 0.85rem; cursor: pointer; font-weight: 700;
+    }
+
+    /* ==========================================================================
+       3. SYSTEM CORE GRID LAYOUT
+       ========================================================================== */
+    .dashboard-layout {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 3rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr; /* 2 Columns: Main content vs Sidebar feed */
+      gap: 2rem;
+    }
+
+    .main-stream { display: flex; flex-direction: column; gap: 2rem; }
+    .card-panel { background-color: var(--bg-card); border: 1px solid var(--border-line); border-radius: 12px; padding: 2rem; }
+    
+    .panel-title { font-family: var(--font-display); font-size: 1.3rem; margin-bottom: 1rem; }
+
+    /* Visual Blur Layer */
+    .chart-box-wrapper { position: relative; width: 100%; height: 320px; }
+    
+    .paywall-blur-shield {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(13, 19, 33, 0.4); backdrop-filter: blur(16px);
+      display: flex; justify-content: center; align-items: center; border-radius: 8px; z-index: 10;
+    }
+
+    .paywall-notice { text-align: center; padding: 2rem; max-width: 360px; }
+    .paywall-notice h4 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.5rem; }
+    .paywall-notice p { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 1.25rem; }
+    
+    .upgrade-btn {
+      background-color: var(--accent-neon); color: var(--bg-base);
+      border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 700; cursor: pointer;
+    }
+
+    /* ==========================================================================
+       4. AGGREGATED NEWS FEED (Right Sidebar)
+       ========================================================================== */
+    .news-stream-list { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 1rem; }
+    .news-item { border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem; }
+    .news-item:last-child { border-bottom: none; }
+    .news-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem; }
+    .news-title { font-size: 0.9rem; font-weight: 600; line-height: 1.4; }
+
+    /* ==========================================================================
+       5. COMMENTS INFRASTRUCTURE
+       ========================================================================== */
+    .comment-composer { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+    .comment-input {
+      flex: 1; background-color: #060913; border: 1px solid var(--border-line);
+      border-radius: 8px; padding: 0.75rem; color: var(--text-pure); font-family: var(--font-body); outline: none;
+    }
+    .comment-submit { background-color: var(--text-pure); color: var(--bg-base); border: none; padding: 0 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; }
+    
+    .comments-thread { display: flex; flex-direction: column; gap: 1.25rem; }
+    .comment-node { background-color: rgba(255,255,255,0.02); padding: 1rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.03); }
+    .comment-author { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--accent-blue); }
+    .comment-body { font-size: 0.85rem; color: #E2E8F0; }
+  </style>
 </head>
 <body>
 
-    <div id="auth-screen" style="display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #0f172a; font-family: sans-serif;">
-        <div style="background: #1e293b; padding: 2.5rem; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); width: 100%; max-width: 400px; text-align: center;">
-            
-            <div id="login-logo-container" style="margin-bottom: 1.5rem;">
-                <div style="display: inline-block; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; padding: 0.75rem 1.5rem; font-weight: bold; border-radius: 8px; font-size: 1.25rem; letter-spacing: 1px;">
-                    InfiniTR
-                </div>
+  <nav class="navbar">
+    <div class="logo">INFINI<span>TR</span></div>
+    
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="Search global intelligence indexes & market news...">
+    </div>
+
+    <div class="profile-pill">
+      <span id="userEmailDisplay" class="user-email">guest_account@infinitr.io</span>
+      <button id="authTriggerBtn" class="auth-btn" onclick="toggleSimulatedSession()">Log Out</button>
+    </div>
+  </nav>
+
+  <main class="dashboard-layout">
+    
+    <div class="main-stream">
+      
+      <section class="card-panel">
+        <h2 class="panel-title">📉 High-Frequency AI Trend Index</h2>
+        <div class="chart-box-wrapper">
+          <div id="marketAnalyticsChart"></div>
+          
+          <div id="chartPaywallShield" class="paywall-blur-shield" style="display: none;">
+            <div class="paywall-notice">
+              <div style="font-size: 1.75rem; margin-bottom: 0.5rem;">🔒</div>
+              <h4>Premium Predictive Overlay Locked</h4>
+              <p>Your current profile tier does not have clearance to view predictive macro indicators.</p>
+              <button class="upgrade-btn" onclick="upgradeSimulatedProfile()">Upgrade Account Tier</button>
             </div>
-
-            <h3 style="color: white; margin-bottom: 0.5rem; font-size: 1.5rem;">System Authentication</h3>
-            <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 2rem;">Secure Entry Gateway Pipeline</p>
-
-            <form id="login-form" style="text-align: left;">
-                <div style="margin-bottom: 1.25rem;">
-                    <label style="display: block; color: #cbd5e1; font-size: 0.85rem; margin-bottom: 0.5rem;">Username</label>
-                    <input type="text" id="username" required style="width: 100%; padding: 0.75rem; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: white; outline: none; box-sizing: border-box;">
-                </div>
-                <div style="margin-bottom: 1.5rem;">
-                    <label style="display: block; color: #cbd5e1; font-size: 0.85rem; margin-bottom: 0.5rem;">Password</label>
-                    <input type="password" id="password" required style="width: 100%; padding: 0.75rem; background: #0f172a; border: 1px solid #334155; border-radius: 6px; color: white; outline: none; box-sizing: border-box;">
-                </div>
-                
-                <div id="auth-error" style="color: #ef4444; font-size: 0.8rem; margin-bottom: 1rem; display: none;"></div>
-
-                <button type="submit" style="width: 100%; padding: 0.75rem; background: #3b82f6; border: none; border-radius: 6px; color: white; font-weight: bold; cursor: pointer; transition: background 0.2s;">
-                    Authorize Session
-                </button>
-            </form>
+          </div>
         </div>
-    </div>
+      </section>
 
-    <div id="app-screen" style="display: none;">
+      <section class="card-panel">
+        <h2 class="panel-title">💬 Live System Discussion</h2>
         
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <h2><i class="fa-solid fa-infinity"></i> InfiniTR</h2>
-            </div>
-            <nav class="sidebar-menu">
-                <a href="#dashboard" class="nav-link active" data-target="dashboard-view">
-                    <i class="fa-solid fa-chart-pie"></i> Control Center
-                </a>
-                <a href="#ai-directory" class="nav-link" data-target="ai-directory-view">
-                    <i class="fa-solid fa-robot"></i> Agent Hub
-                </a>
-                <a href="#features" class="nav-link" data-target="features-view">
-                    <i class="fa-solid fa-layer-group"></i> Architecture
-                </a>
-                <a href="#trends" class="nav-link" data-target="trends-view">
-                    <i class="fa-solid fa-arrow-trend-up"></i> Data Matrix
-                </a>
-            </nav>
-            <div class="sidebar-footer">
-                <div class="user-profile">
-                    <i class="fa-solid fa-circle-user profile-icon"></i>
-                    <div>
-                        <span id="user-display-name" style="display:block; font-weight:600; font-size:0.9rem;">Connecting...</span>
-                        <small id="user-role-sub" style="color:var(--text-secondary); font-size:0.75rem;">Loading Identity...</small>
-                    </div>
-                </div>
-                <button id="logout-btn" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Disconnect</button>
-            </div>
-        </aside>
+        <div class="comment-composer">
+          <input type="text" id="newCommentInput" class="comment-input" placeholder="Share your analysis on current trend vectors...">
+          <button class="comment-submit" onclick="postCustomComment()">Post</button>
+        </div>
 
-        <main class="main-content">
-            
-            <section id="dashboard-view" class="app-section">
-                <div class="section-header">
-                    <h1>Operational Dashboard (<span id="portal-role-badge">Syncing</span>)</h1>
-                    <p>Real-time analytics matrix and active data configurations.</p>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fa-solid fa-microchip icon-blue"></i>
-                        <div><h3>Ecosystem Queries</h3><p class="stat-value" id="stats-queries-count">1,420</p></div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fa-solid fa-bolt icon-green"></i>
-                        <div><h3>Interface Health</h3><p class="stat-value">Nominal</p></div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fa-solid fa-database icon-purple"></i>
-                        <div><h3>Feedback Logs</h3><p class="stat-value" id="stats-feedback-count">0</p></div>
-                    </div>
-                </div>
+        <div class="comments-thread" id="commentsBox">
+          <div class="comment-node">
+            <div class="comment-author">alpha_trader_99@gmail.com</div>
+            <div class="comment-body">The standard volume indexes are shifting fast. Looks like a solid accumulation pattern over the last 48 hours.</div>
+          </div>
+          <div class="comment-node">
+            <div class="comment-author">institutional_block@proton.me</div>
+            <div class="comment-body">Agreed. The predictive trend layers look highly volatile today. Waiting for verification on the next close.</div>
+          </div>
+        </div>
+      </section>
 
-                <div id="admin-only-panel" class="content-card admin-action-btn" style="border: 1px solid #ef4444; margin-bottom: 1.5rem;">
-                    <h3 style="color: #ef4444;"><i class="fa-solid fa-user-shield"></i> Master Administrative Array</h3>
-                    <p style="margin-bottom: 1rem; color: #94a3b8;">This control interface operates directly on the platform system files. Users are locked out from accessing these commands.</p>
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                        <button class="btn-action" style="background: #ef4444;" id="admin-flush-btn">Purge User Storage Cache</button>
-                        <button class="btn-action" style="background: #22c55e;" id="admin-log-btn">Dump Opinion Ledger</button>
-                    </div>
-                </div>
-
-                <div class="content-card" style="margin-bottom: 1.5rem;">
-                    <h3><i class="fa-solid fa-newspaper" style="color: #eab308;"></i> Live Network Feed & Bulletins</h3>
-                    <p style="margin-top: 0.5rem; color: #cbd5e1;"><strong>Security Briefing:</strong> Role restrictions have been deployed. All core agent operations and global cache overrides are restricted to administrative clearance only.</p>
-                </div>
-
-                <div class="content-card" style="margin-bottom: 1.5rem;">
-                    <h3><i class="fa-solid fa-comment-dots" style="color: #3b82f6;"></i> Share Your Opinion</h3>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Submit comments, thoughts, or interface feedback records directly into the local dashboard ledger.</p>
-                    <form id="opinion-form">
-                        <textarea id="user-opinion-text" rows="3" style="width:100%; background:var(--bg-main); border:1px solid var(--border); color:white; border-radius:6px; padding:0.75rem; resize:none; outline:none; font-size:0.95rem;" placeholder="Type your commentary or system suggestions here..." required></textarea>
-                        <button type="submit" class="btn-primary" style="width:auto; padding:0.5rem 1.5rem; margin-top:0.75rem;">Submit Records</button>
-                    </form>
-                </div>
-
-                <div class="content-card" style="margin-top: 1.5rem;">
-                    <h4 style="color: white; margin-top: 0; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="display: inline-block; width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></span>
-                        Live Platform Submissions Feed (Cloud-Connected)
-                    </h4>
-                    <div id="opinions-timeline-container" style="max-height: 400px; overflow-y: auto; padding-right: 0.25rem;">
-                        <p style="color: var(--text-secondary); font-style: italic;">Connecting to data nodes stream...</p>
-                    </div>
-                </div>
-            </section>
-
-            <section id="ai-directory-view" class="app-section" style="display: none;">
-                <div class="section-header">
-                    <h1>Ecosystem Agent Hub</h1>
-                    <p>Search, scan, or launch open-source autonomous modules and mocked web indexes.</p>
-                    
-                    <div class="search-wrapper" style="margin-top: 1.5rem;">
-                        <i class="fa-solid fa-magnifying-glass search-icon" style="position: absolute; margin: 0.75rem; color: var(--text-secondary);"></i>
-                        <input type="text" id="global-search-bar" placeholder="Search built-in models or simulate web crawling (e.g., 'news', 'AI', 'system')..." style="width:100%; max-width:600px; padding:0.65rem 0.65rem 0.65rem 2.5rem; border-radius:6px; background:var(--bg-card); border:1px solid var(--border); color:white; outline:none; font-size:0.95rem;">
-                    </div>
-                </div>
-
-                <div id="web-search-results-box" class="content-card" style="display:none; margin-bottom: 1.5rem; border: 1px solid var(--accent);">
-                    <h4 style="color: var(--accent); margin-bottom: 0.75rem;"><i class="fa-solid fa-globe"></i> Simulated Cloud Web Crawl Results</h4>
-                    <div id="search-results-output-container" style="display:flex; flex-direction:column; gap:0.75rem;"></div>
-                </div>
-
-                <div class="tools-grid" id="agents-grid-container">
-                    <div class="tool-card" data-tags="text automation builder templates files code">
-                        <div class="card-badge">Free Tier</div>
-                        <h4><i class="fa-solid fa-code"></i> Code & Text Automation Model</h4>
-                        <p>Generates production script scaffolding, filters strings, and parses system logic schemas.</p>
-                        <button class="btn-action admin-action-btn">Launch Agent Execution</button>
-                    </div>
-                    <div class="tool-card" data-tags="cyber engine security network sandbox tools">
-                        <div class="card-badge">Security Core</div>
-                        <h4><i class="fa-solid fa-shield-halved"></i> Cyber Analytics Engine Suite</h4>
-                        <p>Evaluates transport security rules and handles local virtual container execution maps.</p>
-                        <button class="btn-action admin-action-btn">Initialize Security Matrix</button>
-                    </div>
-                    <div class="tool-card" data-tags="translation language models cross regional multi">
-                        <div class="card-badge">Free Tier</div>
-                        <h4><i class="fa-solid fa-language"></i> Multi-Lingual Translation Core</h4>
-                        <p>Translates document assets, structures data keys across formats, and resolves interface localization assets.</p>
-                        <button class="btn-action admin-action-btn">Deploy Translator Engine</button>
-                    </div>
-                    <div class="tool-card" data-tags="vision image processing visual neural intelligence matrix">
-                        <div class="card-badge">Media Engine</div>
-                        <h4><i class="fa-solid fa-eye"></i> Vision Matrix Array</h4>
-                        <p>Processes image data maps, scans security feeds, and checks for irregularities in visual inputs.</p>
-                        <button class="btn-action admin-action-btn">Spin Up Vision Stream</button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="features-view" class="app-section" style="display: none;">
-                <div class="section-header">
-                    <h1>Platform Architecture</h1>
-                    <p>Details regarding the client-side system build.</p>
-                </div>
-                <div class="content-card">
-                    <h3>Modular Hash Scaffolding</h3>
-                    <p>InfiniTR leverages zero-latency client-side routing, making the application snappy even when running over static networks like GitHub Pages.</p>
-                </div>
-            </section>
-
-            <section id="trends-view" class="app-section" style="display: none;">
-                <div class="section-header">
-                    <h1>Pipeline Metrics Data Matrix</h1>
-                    <p>Active tracking readouts for running processes.</p>
-                </div>
-                <div class="content-card">
-                    <h3>Sub-System Process Nodes</h3>
-                    <p>All process queues and technical metrics monitors are operating optimally.</p>
-                </div>
-            </section>
-
-        </main>
     </div>
 
-    <script src="script.js"></script>
+    <aside class="card-panel">
+      <h2 class="panel-title">📰 Dynamic Signals & News</h2>
+      <div class="news-stream-list">
+        
+        <div class="news-item">
+          <div class="news-meta"><span>System Signal</span><span>14 mins ago</span></div>
+          <div class="news-title">Global computational network volumes increase by 14.2% over standard moving baseline averages.</div>
+        </div>
+
+        <div class="news-item">
+          <div class="news-meta"><span>Market Updates</span><span>2 hours ago</span></div>
+          <div class="news-title">Automated financial execution protocols hit record-high capital efficiency milestones across decentralized ledger networks.</div>
+        </div>
+
+        <div class="news-item">
+          <div class="news-meta"><span>Ecosystem Tracking</span><span>5 hours ago</span></div>
+          <div class="news-title">Privacy protocols verify zero-leakage scraping loops completed across target telemetry networks.</div>
+        </div>
+
+      </div>
+    </aside>
+
+  </main>
+
+  <script>
+    let isUserLoggedIn = true;
+    let isProfilePremium = false;
+    let mainApexChartInstance = null;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      buildGlobalAnonymizedChart();
+    });
+
+    // Renders smooth anonymized data graphs with zero developer terms visible
+    function buildGlobalAnonymizedChart() {
+      const options = {
+        series: [
+          { name: 'System Volume Delta', data: [34, 44, 54, 21, 67, 88, 95] },
+          { name: 'Predictive Moving Mean', data: [15, 25, 47, 32, 54, 44, 61] }
+        ],
+        chart: { type: 'area', height: 300, toolbar: { show: false }, background: 'transparent' },
+        colors: ['#10B981', '#06B6D4'],
+        dataLabels: { enabled: false },
+        stroke: { curve: 'smooth', width: 2 },
+        theme: { mode: 'dark' },
+        grid: { borderColor: '#1E293B' },
+        xaxis: {
+          categories: ['04:00', '08:00', '12:00', '16:00', '20:00', '00:00', '04:00'],
+          labels: { style: { colors: '#64748B' } }
+        },
+        yaxis: { labels: { style: { colors: '#64748B' } } },
+        legend: { labels: { colors: '#FFFFFF' }, position: 'top' }
+      };
+
+      mainApexChartInstance = new ApexCharts(document.querySelector("#marketAnalyticsChart"), options);
+      mainApexChartInstance.render();
+    }
+
+    // Handles simulation toggles for verification
+    function toggleSimulatedSession() {
+      const emailField = document.getElementById('userEmailDisplay');
+      const authBtn = document.getElementById('authTriggerBtn');
+      const shield = document.getElementById('chartPaywallShield');
+      const chartElement = document.getElementById('marketAnalyticsChart');
+
+      isUserLoggedIn = !isUserLoggedIn;
+
+      if (isUserLoggedIn) {
+        emailField.innerText = "guest_account@infinitr.io";
+        authBtn.innerText = "Log Out";
+        shield.style.display = "none";
+        chartElement.style.filter = "none";
+      } else {
+        emailField.innerText = "❌ Session Terminated";
+        authBtn.innerText = "Log In via Google";
+        shield.style.display = "flex"; // Locks everything instantly on logout
+        chartElement.style.filter = "blur(16px)";
+      }
+    }
+
+    function upgradeSimulatedProfile() {
+      const emailField = document.getElementById('userEmailDisplay');
+      const shield = document.getElementById('chartPaywallShield');
+      const chartElement = document.getElementById('marketAnalyticsChart');
+      
+      isProfilePremium = true;
+      emailField.innerText = "premium_user@infinitr.io ⭐";
+      shield.style.display = "none";
+      chartElement.style.filter = "none";
+      alert("Profile status validated. Premium database flag simulated.");
+    }
+
+    // Simple append structure for testing comments interaction
+    function postCustomComment() {
+      const input = document.getElementById('newCommentInput');
+      const thread = document.getElementById('commentsBox');
+      const currentEmail = document.getElementById('userEmailDisplay').innerText;
+
+      if (!isUserLoggedIn) {
+        alert("Authentication required to communicate with active discussion nodes.");
+        return;
+      }
+      if (input.value.trim() === "") return;
+
+      const newComment = document.createElement('div');
+      newComment.className = 'comment-node';
+      newComment.innerHTML = `
+        <div class="comment-author">${currentEmail}</div>
+        <div class="comment-body">${input.value}</div>
+      `;
+
+      thread.insertBefore(newComment, thread.firstChild);
+      input.value = "";
+    }
+  </script>
 </body>
 </html>

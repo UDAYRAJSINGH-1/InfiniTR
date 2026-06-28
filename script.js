@@ -40,6 +40,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const isLoggedIn = localStorage.getItem('isLoggedIn');
         const savedRole = localStorage.getItem('userRole');
         const savedName = localStorage.getItem('userDisplayName');
+        
+        // Grab our new admin elements safely
+        const adminPanel = document.getElementById('admin-inbox-panel');
 
         if (isLoggedIn === 'true') {
             if (userDisplayName) userDisplayName.textContent = savedName;
@@ -52,15 +55,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if (logoutBtn) logoutBtn.style.display = "inline-block";
             if (loginTriggerBtn) loginTriggerBtn.style.display = "none";
             if (authScreen) authScreen.style.display = "none";
+
+            // 🔐 SECURE ROLE CHECK: Show inbox only if user is an Administrator
+            if (savedRole === 'Administrator Tier') {
+                if (adminPanel) adminPanel.style.display = "block";
+                fetchAdminInboxTransmissions();
+            } else {
+                if (adminPanel) adminPanel.style.display = "none";
+            }
         } else {
             if (userDisplayName) userDisplayName.textContent = "guest_account@infinitr.io";
             if (userRoleSub) userRoleSub.textContent = "";
             if (portalRoleBadge) portalRoleBadge.style.display = "none";
             if (logoutBtn) logoutBtn.style.display = "none";
             if (loginTriggerBtn) loginTriggerBtn.style.display = "inline-block";
+            if (adminPanel) adminPanel.style.display = "none"; // Hide if logged out
         }
         
-        // Safely fire off page-specific functions
         if (statsQueriesCount || statsFeedbackCount) { renderLedgerMetrics(); }
         if (document.getElementById('opinions-timeline-container')) { fetchLiveOpinionsTimeline(); }
     }
@@ -181,7 +192,48 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (err) { console.error(err); }
         });
     }
+    async function fetchAdminInboxTransmissions() {
+        const inboxContainer = document.getElementById('admin-inbox-container');
+        if (!inboxContainer) return;
 
+        try {
+            const response = await fetch(`${SUPABASE_URL}/rest/v1/contact_submissions?select=*&order=created_at.desc`, {
+                method: 'GET',
+                headers: { 
+                    'apikey': SUPABASE_KEY, 
+                    'Authorization': `Bearer ${SUPABASE_KEY}` 
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.length === 0) {
+                    inboxContainer.innerHTML = `<p style="color: #64748B; font-style: italic; padding: 1rem;">No transmission packets currently stored in database.</p>`;
+                    return;
+                }
+                
+                // Render your contact submissions beautifully onto your dashboard console
+                inboxContainer.innerHTML = data.map(item => {
+                    const cleanDate = item.created_at ? new Date(item.created_at).toLocaleString() : 'Unknown Timestamp';
+                    return `
+                    <div style="background: rgba(16, 185, 129, 0.03); padding: 1.25rem; border-radius: 8px; margin-bottom: 0.75rem; border: 1px solid rgba(16, 185, 129, 0.15); border-left: 4px solid #10B981;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                            <strong style="color: #FFFFFF; font-size: 0.9rem;">👤 ${item.name}</strong>
+                            <span style="color: #64748B; font-size: 0.75rem;">${cleanDate}</span>
+                        </div>
+                        <div style="color: #06B6D4; font-size: 0.8rem; margin-bottom: 0.5rem; font-family: monospace;">📧 Base Routing: ${item.email}</div>
+                        <p style="color: #E2E8F0; font-size: 0.85rem; margin-top: 0.25rem; line-height: 1.4; background: #060913; padding: 0.75rem; border-radius: 6px;">
+                            ${item.message}
+                        </p>
+                    </div>
+                `;}).join('');
+            } else {
+                inboxContainer.innerHTML = `<p style="color: #EF4444; font-size: 0.85rem;">Failed to read operational logs. Verify table permissions.</p>`;
+            }
+        } catch (err) { 
+            console.error("Inbox channel synchronization crash:", err); 
+        }
+    }
     // ==========================================
     // 📨 UNIFIED CONTACT FORM SUBMISSION HANDLER
     // ==========================================
